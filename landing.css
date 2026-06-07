@@ -1,46 +1,110 @@
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
+:root {
+  --page-margin: 24px;
 }
 
-html,
-body {
-  width: 100%;
-  height: 100%;
-  background: #ffffff;
-  color: #000000;
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+.landing-sentence {
+  position: fixed;
+  top: 24px;
+  left: var(--page-margin);
+  right: var(--page-margin);
+  width: auto;
+  font-size: 29px;
+  line-height: 1.18;
+  letter-spacing: -0.01em;
+  color: #000;
+  z-index: 1;
+  pointer-events: auto;
 }
 
-body {
-  border-left: 1px solid #000;
-}
-
-.landing-page {
-  width: 100vw;
-  height: 100vh;
-  position: relative;
-}
-
+/* 아래 메뉴 전체 */
 .landing-menu {
   position: fixed;
-  top: 30px;
-  left: 57%;
+  left: var(--page-margin);
+  right: var(--page-margin);
+  bottom: 42px;
   display: flex;
-  flex-direction: column;
-  gap: 36px;
+  letter-spacing: -0.01em;
+  justify-content: space-between;
+  align-items: flex-end;
+  z-index: 10;
+  pointer-events: none;
 }
 
-.landing-menu a {
+/* 공통 링크 스타일 */
+.landing-link {
+  position: static;
   color: #000;
   text-decoration: none;
-  font-size: 42px;
+  font-size: clamp(60px, 6vw, 104px);
   font-weight: 400;
-  letter-spacing: 0.02em;
-  line-height: 1;
+  letter-spacing: -0.01em;
+  line-height: 0.9;
+  white-space: nowrap;
+  cursor: pointer;
+  pointer-events: auto;
 }
 
-.landing-menu a:hover {
-  opacity: 0.35;
+.landing-link:hover {
+  opacity: 0.5;
+}
+
+/* 왼쪽 아래 */
+.pedia-link {
+  text-align: left;
+}
+
+/* 오른쪽 아래 */
+.verse-link {
+  text-align: right;
+}
+
+.definition-word {
+  position: relative;
+  display: inline-block;
+  cursor: help;
+  pointer-events: auto;
+}
+
+/* 단어 위 점점점 */
+.definition-word::before {
+  content: "•••";
+  position: absolute;
+  top: -14px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 24px;
+  letter-spacing: 4px;
+  line-height: 1;
+  color: #000;
+  opacity: 0.6;
+}
+
+/* hover했을 때 나오는 definition tag */
+.definition-word::after {
+  content: attr(data-definition);
+  position: absolute;
+  left: 0;
+  top: 115%;
+  width: max-content;
+  max-width: none;
+  padding: 6px 8px;
+  background: #fff;
+  border: 1px solid #000;
+  color: #000;
+  font-size: 11px;
+  line-height: 1.35;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+  z-index: 9999;
+
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(4px);
+  transition: opacity 0.15s ease, transform 0.15s ease;
+}
+
+.definition-word:hover::after {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
 }
