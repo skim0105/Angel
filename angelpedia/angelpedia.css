@@ -1,0 +1,324 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  width: 100%;
+  min-height: 100%;
+  background: #ffffff;
+  color: #000000;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+body {
+  overflow-x: hidden;
+}
+
+/* 오른쪽 상단 네비 */
+.pedia-nav {
+  position: fixed;
+  top: 18px;
+  right: 24px;
+  z-index: 1000;
+
+  display: flex;
+  gap: 36px;
+
+  font-size: 11px;
+}
+
+.pedia-nav a {
+  color: #000;
+  text-decoration: none;
+}
+
+.pedia-nav a:hover {
+  opacity: 0.35;
+}
+
+/* 왼쪽 시대 카테고리 */
+.era-container {
+  position: fixed;
+  top: 28px;
+  left: 34px;
+  z-index: 1000;
+}
+
+.era-list {
+  list-style: none;
+
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.era-list li {
+  font-size: 9px;
+  line-height: 1.1;
+
+  cursor: pointer;
+  color: #000;
+  opacity: 0.35;
+
+  transition: opacity 0.2s ease;
+}
+
+.era-list li.active,
+.era-list li:hover {
+  opacity: 1;
+}
+
+.pedia-grid {
+  width: calc(100vw - 64px);
+  margin: 210px auto 48px auto;
+}
+
+.pedia-set {
+  width: 100%;
+  margin-bottom: 42px;
+
+  display: grid;
+  grid-template-columns: 1.15fr 1.15fr 1.65fr 1.45fr 1.45fr 1.45fr;
+  grid-template-rows: 300px 470px;
+  gap: 0;
+
+  border-top: 1px solid #000;
+  border-left: 1px solid #000;
+}
+
+.pedia-set.hidden {
+  display: none;
+}
+
+
+/* 개별 날개 칸 */
+.wing-card {
+  position: relative;
+
+  background: #fff;
+  border-right: 1px solid #000;
+  border-bottom: 1px solid #000;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 6px;
+  overflow: hidden;
+}
+
+/* 날개 이미지 */
+.wing-card img {
+  width: 100%;
+  height: 100%;
+
+  object-fit: contain;
+  mix-blend-mode: multiply;
+
+  transform: scale(1.12);
+  transform-origin: center;
+}
+
+/* hover 시 번호 */
+.wing-card figcaption {
+  position: absolute;
+  left: 12px;
+  bottom: 10px;
+
+  font-size: 9px;
+  letter-spacing: 0.02em;
+
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.wing-card:hover figcaption {
+  opacity: 1;
+}
+
+/* 8칸 도록 배치 */
+.slot-1 {
+  grid-column: 1 / 2;
+  grid-row: 1 / 2;
+}
+
+.large-wing1 img {
+  transform: scale(1.9);
+  transform-origin: center;
+}
+
+.slot-2 {
+  grid-column: 2 / 3;
+  grid-row: 1 / 2;
+}
+
+.large-wing2 img {
+  transform: scale(1.5);
+  transform-origin: center;
+}
+
+.slot-3 {
+  grid-column: 3 / 4;
+  grid-row: 1 / 2;
+}
+
+.slot-4 {
+  grid-column: 4 / 7;
+  grid-row: 1 / 2;
+}
+
+.large-wing4 img {
+  transform: scale(1.8);
+  transform-origin: center;
+}
+
+.slot-5 {
+  grid-column: 1 / 3;
+  grid-row: 2 / 3;
+}
+
+.large-wing5 img {
+  transform: scale(1);
+  transform-origin: center;
+}
+
+.slot-6 {
+  grid-column: 3 / 5;
+  grid-row: 2 / 3;
+}
+
+.large-wing6 img {
+  transform: scale(1.4);
+  object-position: center center;
+  transform: translate(-5%, 1%) scale(1.25);
+  transform-origin: center;
+}
+
+
+
+.slot-7 {
+  grid-column: 5 / 6;
+  grid-row: 2 / 3;
+}
+
+.large-wing7 img {
+  transform: scale(1.4);
+  object-position: center center;
+  transform: translate(17%, 1%) scale(1.25);
+  transform-origin: center;
+}
+
+.slot-8 {
+  grid-column: 6 / 7;
+  grid-row: 2 / 3;
+}
+
+/* 필터링 시 숨김 */
+.wing-card.hidden {
+  display: none;
+}
+
+/* 작은 화면 대응 */
+@media (max-width: 900px) {
+  .pedia-grid {
+    width: calc(100vw - 32px);
+    margin: 160px auto 32px auto;
+
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: none;
+  }
+
+  .slot-1,
+  .slot-2,
+  .slot-3,
+  .slot-4,
+  .slot-5,
+  .slot-6,
+  .slot-7,
+  .slot-8 {
+    grid-column: auto;
+    grid-row: auto;
+    height: 260px;
+  }
+
+  .pedia-nav {
+    right: 16px;
+    gap: 20px;
+  }
+
+  .era-container {
+    left: 20px;
+  }
+}
+
+/* 화면에서는 인쇄용 도록 숨기기 */
+.print-book {
+  display: none;
+}
+
+/* EARLY MEDIEVAL 전용 3-2-3 레이아웃 */
+.pedia-set.early-layout {
+  grid-template-columns: repeat(6, 1fr);
+  grid-template-rows: 260px 300px 260px;
+}
+
+/* 1단: 3개 */
+.pedia-set.early-layout .slot-1 {
+  grid-column: 1 / 3;
+  grid-row: 1 / 2;
+}
+
+.large-wing1 img {
+  transform: scale(1.5);
+  transform-origin: center;
+}
+
+.pedia-set.early-layout .slot-2 {
+  grid-column: 3 / 5;
+  grid-row: 1 / 2;
+}
+
+.large-wing2 img {
+  transform: translate(0%, 2.3%) scale(1.5);
+  transform-origin: center;
+}
+
+.pedia-set.early-layout .slot-3 {
+  grid-column: 5 / 7;
+  grid-row: 1 / 2;
+}
+
+.large-wing3 img {
+  transform: translate(0%, 4.5%) scale(1.5);
+  transform-origin: center;
+}
+
+/* 2단: 2개 */
+.pedia-set.early-layout .slot-4 {
+  grid-column: 1 / 4;
+  grid-row: 2 / 3;
+}
+
+.pedia-set.early-layout .slot-5 {
+  grid-column: 4 / 7;
+  grid-row: 2 / 3;
+}
+
+/* 3단: 3개 */
+.pedia-set.early-layout .slot-6 {
+  grid-column: 1 / 3;
+  grid-row: 3 / 4;
+}
+
+.pedia-set.early-layout .slot-7 {
+  grid-column: 3 / 5;
+  grid-row: 3 / 4;
+}
+
+.pedia-set.early-layout .slot-8 {
+  grid-column: 5 / 7;
+  grid-row: 3 / 4;
+}

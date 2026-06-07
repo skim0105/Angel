@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>ANGELPEDIA</title>
+  <link rel="stylesheet" href="angelpedia.css">
+</head>
+
+<body data-era="all">
+
+  <nav class="pedia-nav">
+    <a href="../index.html">HOME</a>
+    <a href="../angelverse/angelverse.html">ANGELVERSE</a>
+  </nav>
+
+  <aside class="era-container">
+    <ul class="era-list">
+      <li data-era="all" class="active">ALL</li>
+      <li data-era="ancient">ANCIENT</li>
+      <li data-era="early">EARLY MEDIEVAL</li>
+      <li data-era="romanesque">ROMANESQUE</li>
+      <li data-era="gothic">GOTHIC MEDIEVAL</li>
+      <li data-era="renaissance">RENAISSANCE</li>
+      <li data-era="modern">MODERN</li>
+    </ul>
+  </aside>
+
+  <main class="pedia-grid">
+
+    <!-- ANCIENT -->
+    <section class="pedia-set" data-era-set="ancient">
+
+      <figure class="wing-card slot-1 large-wing1">
+        <img src="ancient/ANCIENT NO.05.png" alt="Ancient No.01">
+        <figcaption>ANCIENT NO.01</figcaption>
+      </figure>
+
+      <figure class="wing-card slot-2 large-wing2">
+        <img src="ancient/ANCIENT NO.04.png" alt="Ancient No.02">
+        <figcaption>ANCIENT NO.02</figcaption>
+      </figure>
+
+      <figure class="wing-card slot-3 large-wing3">
+        <img src="ancient/ANCIENT NO.02.png" alt="Ancient No.03">
+        <figcaption>ANCIENT NO.03</figcaption>
+      </figure>
+
+      <figure class="wing-card slot-4 large-wing4">
+        <img src="ancient/ANCIENT NO.08.png" alt="Ancient No.04">
+        <figcaption>ANCIENT NO.04</figcaption>
+      </figure>
+
+      <figure class="wing-card slot-5 large-wing5">
+        <img src="ancient/ANCIENT NO.07.png" alt="Ancient No.05">
+        <figcaption>ANCIENT NO.05</figcaption>
+      </figure>
+
+      <figure class="wing-card slot-6 large-wing6">
+        <img src="ancient/ANCIENT NO.03.png" alt="Ancient No.06">
+        <figcaption>ANCIENT NO.06</figcaption>
+      </figure>
+
+      <figure class="wing-card slot-7 large-wing7">
+        <img src="ancient/ANCIENT NO.06.png" alt="Ancient No.07">
+        <figcaption>ANCIENT NO.07</figcaption>
+      </figure>
+
+      <figure class="wing-card slot-8 large-wing8">
+        <img src="ancient/ANCIENT NO.01.png" alt="Ancient No.08">
+        <figcaption>ANCIENT NO.08</figcaption>
+      </figure>
+
+    </section>
+
+
+    <!-- EARLY MEDIEVAL -->
+    <section class="pedia-set early-layout" data-era-set="early">
+
+      <figure class="wing-card slot-1 large-wing1">
+        <img src="earlymedieval/EARLY MEDIEVAL NO.01.png" alt="Early Medieval No.01">
+        <figcaption>EARLY MEDIEVAL NO.01</figcaption>
+      </figure>
+
+      <figure class="wing-card slot-2 large-wing2">
+        <img src="earlymedieval/EARLY MEDIEVAL NO.02.png" alt="Early Medieval No.02">
+        <figcaption>EARLY MEDIEVAL NO.02</figcaption>
+      </figure>
+
+      <figure class="wing-card slot-3 large-wing3">
+        <img src="earlymedieval/EARLY MEDIEVAL NO.03.png" alt="Early Medieval No.03">
+        <figcaption>EARLY MEDIEVAL NO.03</figcaption>
+      </figure>
+
+      <figure class="wing-card slot-4 large-wing4">
+        <img src="earlymedieval/EARLY MEDIEVAL NO.04.png" alt="Early Medieval No.04">
+        <figcaption>EARLY MEDIEVAL NO.04</figcaption>
+      </figure>
+
+      <figure class="wing-card slot-5 large-wing5">
+        <img src="earlymedieval/EARLY MEDIEVAL NO.05.png" alt="Early Medieval No.05">
+        <figcaption>EARLY MEDIEVAL NO.05</figcaption>
+      </figure>
+
+      <figure class="wing-card slot-6 large-wing6">
+        <img src="earlymedieval/EARLY MEDIEVAL NO.06.png" alt="Early Medieval No.06">
+        <figcaption>EARLY MEDIEVAL NO.06</figcaption>
+      </figure>
+
+      <figure class="wing-card slot-7 large-wing7">
+        <img src="earlymedieval/EARLY MEDIEVAL NO.07.png" alt="Early Medieval No.07">
+        <figcaption>EARLY MEDIEVAL NO.07</figcaption>
+      </figure>
+
+      <figure class="wing-card slot-8 large-wing8">
+        <img src="earlymedieval/EARLY MEDIEVAL NO.08.png" alt="Early Medieval No.08">
+        <figcaption>EARLY MEDIEVAL NO.08</figcaption>
+      </figure>
+
+    </section>
+
+  </main>
+
+  <section class="print-book">
+    <article class="print-page" data-era="ancient">
+      <img src="print/ANCIENT-NO-001.png" alt="Ancient No.001 Print">
+    </article>
+  </section>
+
+  <script>
+    const eraButtons = document.querySelectorAll('.era-list li');
+    const pediaSets = document.querySelectorAll('.pedia-set');
+    const printPages = document.querySelectorAll('.print-page');
+
+    eraButtons.forEach(button => {
+      button.addEventListener('click', () => {
+        const selectedEra = button.dataset.era;
+
+        document.body.setAttribute('data-era', selectedEra);
+
+        eraButtons.forEach(item => item.classList.remove('active'));
+        button.classList.add('active');
+
+        pediaSets.forEach(set => {
+          if (selectedEra === 'all' || set.dataset.eraSet === selectedEra) {
+            set.classList.remove('hidden');
+          } else {
+            set.classList.add('hidden');
+          }
+        });
+      });
+    });
+
+    window.addEventListener('beforeprint', () => {
+      const selectedEra = document.body.getAttribute('data-era') || 'all';
+
+      printPages.forEach(page => {
+        if (selectedEra === 'all' || page.dataset.era === selectedEra) {
+          page.style.display = 'block';
+        } else {
+          page.style.display = 'none';
+        }
+      });
+    });
+  </script>
+
+</body>
+</html>

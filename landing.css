@@ -108,3 +108,45 @@
   visibility: visible;
   transform: translateY(0);
 }
+
+.angel-trigger {
+  position: relative;
+  display: inline-block;
+  cursor: help;
+  pointer-events: auto;
+}
+
+.angel-trigger::before {
+  content: "•••";
+  position: absolute;
+  top: -14px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 24px;
+  letter-spacing: 4px;
+  line-height: 1;
+  color: #000;
+  opacity: 0.6;
+}
+
+.angel-hover-image {
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  width: 36vw;
+  max-width: 820px;
+  max-height: 100vh;
+  object-fit: contain;
+  transform: translate(-50%, -50%);
+  z-index: 99999;
+
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+}
+
+.angel-trigger:hover .angel-hover-image {
+  opacity: 1;
+  visibility: visible;
+}
