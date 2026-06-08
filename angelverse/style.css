@@ -68,20 +68,7 @@ html, body {
 /* =========================================================
    3. 고정 UI 레이아웃 (상단 네비, 컨트롤러 등) (기존 유지 및 수정)
    ========================================================= */
-.sentence { 
-  position: fixed; 
-  top: 18px; 
-  left: var(--side-margin); 
-  z-index: 1000; 
-  /* 📌 창 너비에 따라 폰트 크기가 8px에서 12px 사이로 유동적으로 변함 */
-  font-size: clamp(8px, 1vw, 12px); 
-  pointer-events: none; 
-  letter-spacing: 0.02em;
-  /* 📌 ERA 메뉴와 겹치지 않게 최대 너비 제한 */
-  max-width: 70vw; 
-  line-height: 1.5;
-  word-break: keep-all;
-}
+
 .top-nav { 
   position: fixed; 
   top: 18px; 
@@ -93,7 +80,7 @@ html, body {
   justify-content: flex-end; 
   align-items: center; 
   
-  font-size: clamp(9px, 1.1vw, 12px); 
+  font-size: clamp(9px, 1.1vw, 11px); 
   /* 창이 작아지면 메뉴 사이 간격도 줄어듭니다 */
   gap: clamp(10px, 2vw, 30px); 
 }
@@ -111,26 +98,6 @@ html, body {
 }
 
 
-/* ABOUT 오버레이 */
-.about-overlay { 
-  position: fixed; 
-  top: 45px; 
-  right: var(--side-margin); 
-  width: clamp(250px, 35vw, 450px); 
-  max-height: 80vh; 
-  z-index: 1000; 
-  display: none; 
-  overflow-y: auto; 
-}
-
-.about-content { 
-  font-size: 10px; 
-  line-height: 1.5; 
-  text-align: justify; 
-  word-break: keep-all; 
-  background: none;
-  color: #000000;
-}
 
 /* 컨트롤러 (+/-) */
 .controls { 
@@ -164,11 +131,12 @@ html, body {
 
 /* 시대(Era) 선택 메뉴 */
 .era-container {
-  position: fixed;
-  top: 45px;
-  /* 📌 기존 들여쓰기 구조 유지 */
-  left: calc(var(--side-margin) + 162px);
-  z-index: 1100;
+  position: fixed !important;
+  top: 28px !important;
+  left: 34px !important;
+  z-index: 20000 !important;
+  transform: none !important;
+  pointer-events: auto !important;
 }
 
 .era-list {
@@ -180,7 +148,7 @@ html, body {
 
 .era-list li {
   /* 📌 창 크기에 맞춰 폰트 사이즈만 반응 */
-  font-size: clamp(8px, 1vw, 10px); 
+  font-size: clamp(8px, 1vw, 9px); 
   cursor: pointer;
   opacity: 0.4;
   transition: opacity 0.3s ease;
@@ -189,50 +157,6 @@ html, body {
 
 .era-list li:hover,
 .era-list li.active {
-  opacity: 1;
-}
-
-/* 좌측 하단 시대 가이드 테이블 납작하게 수정본 (기존 유지) */
-.era-guide-table {
-  position: fixed;
-  left: var(--side-margin);
-  bottom: 30px; 
-  z-index: 1000;
-  background: rgba(255, 255, 255, 0.5); 
-  border-top: 0.2px solid #000; /* 맨 위 첫 번째 줄 가로선 추가 */
-  width: 550px;
-}
-
-.era-guide-table table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 10px; 
-  line-height: 1.2;
-}
-
-.era-guide-table td {
-  padding: 6px 10px; /* 패딩을 줄여서 '납작하게' */
-  border-bottom: 0.2px solid #000; /* 행 사이 가로선 */
-  color: #000;
-  text-align: left;
-  vertical-align: middle;
-}
-
-.era-guide-table td:nth-child(2) {
-  padding-right: 50px; /* 키워드와 설명 사이 간격 넓힘 */
-}
-
-.tag {
-  font-weight: 400;
-  text-transform: uppercase;
-  letter-spacing: 0.02em;
-}
-
-.era-guide-table {
-  opacity: 0.6;
-  transition: opacity 0.3s;
-}
-.era-guide-table:hover {
   opacity: 1;
 }
 
