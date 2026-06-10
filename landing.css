@@ -69,11 +69,11 @@
 .definition-word::before {
   content: "•••";
   position: absolute;
-  top: -14px;
+  top: -18px;
   left: 50%;
-  transform: translateX(-50%);
-  font-size: 24px;
-  letter-spacing: 4px;
+  transform: translateX(-55%);
+  font-size: 14x;
+  letter-spacing: -0.01em;
   line-height: 1;
   color: #000;
   opacity: 0.6;
@@ -119,11 +119,11 @@
 .angel-trigger::before {
   content: "•••";
   position: absolute;
-  top: -14px;
-  left: 50%;
+  top: -18px;
+  left: 55%;
   transform: translateX(-50%);
   font-size: 24px;
-  letter-spacing: 4px;
+  letter-spacing: -0.03em;
   line-height: 1;
   color: #000;
   opacity: 0.6;

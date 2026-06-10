@@ -350,19 +350,46 @@
 
   </main>
 
-  <section class="print-book">
-    <article class="print-page" data-era="ancient">
-      <img src="print/ANCIENT-NO-001.png" alt="Ancient No.001 Print">
-    </article>
-  </section>
+    <section class="print-book">
+        <article class="print-page" data-era="ancient">
+            <img src="print/ancient/ancient-01.jpg" alt="Ancient Print 01">
+        </article>
+        <article class="print-page" data-era="ancient">
+            <img src="print/ancient/ancient-02.jpg" alt="Ancient Print 02">
+        </article>
+        <article class="print-page" data-era="ancient">
+            <img src="print/ancient/ancient-03.jpg" alt="Ancient Print 03">
+        </article>
+        <article class="print-page" data-era="ancient">
+            <img src="print/ancient/ancient-04.jpg" alt="Ancient Print 04">
+        </article>
+        <article class="print-page" data-era="ancient">
+            <img src="print/ancient/ancient-05.jpg" alt="Ancient Print 05">
+        </article>
+        <article class="print-page" data-era="ancient">
+            <img src="print/ancient/ancient-06.jpg" alt="Ancient Print 06">
+        </article>
+        <article class="print-page" data-era="ancient">
+            <img src="print/ancient/ancient-07.jpg" alt="Ancient Print 07">
+        </article>
+        <article class="print-page" data-era="ancient">
+            <img src="print/ancient/ancient-08.jpg" alt="Ancient Print 08">
+        </article>
+        <article class="print-page" data-era="ancient">
+            <img src="print/ancient/ancient-09.jpg" alt="Ancient Print 09">
+        </article>
+        <article class="print-page" data-era="ancient">
+            <img src="print/ancient/ancient-10.jpg" alt="Ancient Print 10">
+        </article>
+    </section>
 
-  <script>
+    <script>
     const eraButtons = document.querySelectorAll('.era-list li');
     const pediaSets = document.querySelectorAll('.pedia-set');
     const printPages = document.querySelectorAll('.print-page');
 
     eraButtons.forEach(button => {
-      button.addEventListener('click', () => {
+        button.addEventListener('click', () => {
         const selectedEra = button.dataset.era;
 
         document.body.setAttribute('data-era', selectedEra);
@@ -371,27 +398,33 @@
         button.classList.add('active');
 
         pediaSets.forEach(set => {
-          if (selectedEra === 'all' || set.dataset.eraSet === selectedEra) {
+            if (selectedEra === 'all' || set.dataset.eraSet === selectedEra) {
             set.classList.remove('hidden');
-          } else {
+            } else {
             set.classList.add('hidden');
-          }
+            }
         });
-      });
+        });
     });
 
     window.addEventListener('beforeprint', () => {
-      const selectedEra = document.body.getAttribute('data-era') || 'all';
+        const selectedEra = document.body.getAttribute('data-era') || 'all';
 
-      printPages.forEach(page => {
+        printPages.forEach(page => {
         if (selectedEra === 'all' || page.dataset.era === selectedEra) {
-          page.style.display = 'block';
+            page.classList.remove('print-hidden');
         } else {
-          page.style.display = 'none';
+            page.classList.add('print-hidden');
         }
-      });
+        });
     });
-  </script>
+
+    window.addEventListener('afterprint', () => {
+        printPages.forEach(page => {
+        page.classList.remove('print-hidden');
+        });
+    });
+    </script>
 
 </body>
 </html>
