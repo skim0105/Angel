@@ -8,30 +8,113 @@
 
 <body>
   <main class="landing-page">
+
     <div class="landing-sentence">
       <span class="angel-trigger">
         Angel
-        <img class="angel-hover-image" src="angel-hover.png" alt="Angel image">
+        <img
+          class="angel-hover-image"
+          src="angel-hover.png"
+          alt="Angel image"
+        >
       </span>
-      is a 
-      <span class="definition-word" data-definition="Relating to the sky, heaven, or a spiritual realm.">celestial</span>
-      <span class="definition-word" data-definition="A figure that delivers, transfers, or mediates meaning.">messenger</span>
-      and 
-      <span class="definition-word" data-definition="Related to the visual symbols and repeated forms used to represent an idea.">iconographic</span>
-      figure whose formal representation and cultural significance shift according to time, region, and artistic medium
+
+      is a
+
+      <span
+        class="definition-word"
+        data-definition="Relating to the sky, heaven, or a spiritual realm."
+      >
+        celestial
+      </span>
+
+      <span
+        class="definition-word"
+        data-definition="A figure that delivers, transfers, or mediates meaning."
+      >
+        messenger
+      </span>
+
+      and
+
+      <span
+        class="definition-word"
+        data-definition="Related to the visual symbols and repeated forms used to represent an idea."
+      >
+        iconographic
+      </span>
+
+      figure whose formal representation and cultural significance shift
+      according to time, region, and artistic medium
     </div>
 
     <div class="orbit-container">
       <div class="dashed-ellipse"></div>
+
       <div class="angel-orbit">
-        <img src="wing.png" alt="Orbiting Angel" class="orbit-angel-img">
+        <!-- 추후 천사 이미지가 들어가는 영역 -->
       </div>
     </div>
 
     <nav class="landing-menu">
-      <a class="landing-link pedia-link" href="angelpedia/angelpedia.html">ANGELPEDIA</a>
-      <a class="landing-link verse-link" href="angelverse/angelverse.html">ANGELVERSE</a>
+      <a
+        class="landing-link pedia-link"
+        href="angelpedia/angelpedia.html"
+      >
+        ANGELPEDIA
+      </a>
+
+      <a
+        class="landing-link verse-link"
+        href="angelverse/angelverse.html"
+      >
+        ANGELVERSE
+      </a>
     </nav>
+
   </main>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const orbitContainer =
+        document.querySelector('.orbit-container');
+
+      if (!orbitContainer) return;
+
+      let orbitAngle = 0;
+      let previousTime = performance.now();
+
+      /*
+        타원 전체가 한 바퀴 도는 시간입니다.
+        숫자가 클수록 천천히 회전합니다.
+      */
+      const orbitRotationDuration = 90;
+
+      function rotateWholeOrbit(currentTime) {
+        const elapsedSeconds =
+          (currentTime - previousTime) / 1000;
+
+        previousTime = currentTime;
+
+        const degreesPerSecond =
+          360 / orbitRotationDuration;
+
+        orbitAngle +=
+          degreesPerSecond * elapsedSeconds;
+
+        orbitAngle %= 360;
+
+        orbitContainer.style.setProperty(
+          '--orbit-angle',
+          `${orbitAngle}deg`
+        );
+
+        requestAnimationFrame(rotateWholeOrbit);
+      }
+
+      requestAnimationFrame(rotateWholeOrbit);
+    });
+  </script>
+
 </body>
 </html>

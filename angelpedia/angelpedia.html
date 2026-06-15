@@ -3,15 +3,228 @@
 <head>
   <meta charset="UTF-8">
   <title>ANGELPEDIA</title>
+
   <link rel="stylesheet" href="angelpedia.css">
+
+  <link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css"
+  >
+
+  <style>
+    /* =============================
+       ANGELPEDIA INTRO LOADING PAGE
+    ============================== */
+
+    body.is-loading {
+      overflow: hidden;
+    }
+
+    .angelpedia-loader {
+      position: fixed;
+      inset: 0;
+      z-index: 99999;
+
+      width: 100%;
+      height: 100vh;
+      height: 100dvh;
+
+      background-color: #ffffff;
+      color: #000000;
+
+      opacity: 1;
+      visibility: visible;
+
+      transition:
+        opacity 0.8s ease,
+        visibility 0.8s ease;
+    }
+
+    .angelpedia-loader.is-hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .angelpedia-loader-inner {
+      position: relative;
+
+      width: 100%;
+      height: 100%;
+    }
+
+    /* 상단 한글 + 영문 안내 문구 */
+
+    .angelpedia-loader-guide {
+      position: absolute;
+
+      top: 34px;
+      left: 34px;
+      right: 34px;
+    }
+
+    .angelpedia-loader-korean,
+    .angelpedia-loader-english {
+      margin: 0;
+
+      overflow: hidden;
+      white-space: nowrap;
+
+      font-family:
+        "Pretendard",
+        "Apple SD Gothic Neo",
+        Arial,
+        sans-serif;
+
+      font-weight: 400;
+    }
+
+    .angelpedia-loader-korean {
+      min-height: 1.2em;
+
+      font-size: clamp(34px, 1.15vw, 18px);
+      line-height: 1.2;
+      letter-spacing: -0.035em;
+    }
+
+    .angelpedia-loader-english {
+      min-height: 1.2em;
+
+      margin-top: 6px;
+
+      font-size: clamp(34px, 1vw, 16px);
+      line-height: 1.2;
+      letter-spacing: -0.02em;
+    }
+
+    /* 왼쪽 아래 COMMAND + P */
+
+    .angelpedia-loader-command {
+      position: absolute;
+
+      left: 34px;
+      bottom: 34px;
+
+      min-height: 1em;
+
+      margin: 0;
+
+      font-family:
+        "Helvetica Neue",
+        Helvetica,
+        Arial,
+        sans-serif;
+
+      font-size: clamp(230px, 5vw, 80px);
+      font-weight: 300;
+      line-height: 1;
+      letter-spacing: -0.05em;
+
+      white-space: nowrap;
+    }
+
+    /* 타이핑 커서 */
+
+    .angelpedia-loader .is-typing::after {
+      content: "";
+
+      display: inline-block;
+
+      width: 0.07em;
+      height: 0.9em;
+
+      margin-left: 0.1em;
+
+      background-color: currentColor;
+      vertical-align: -0.05em;
+
+      animation: angelpedia-cursor 0.7s step-end infinite;
+    }
+
+    @keyframes angelpedia-cursor {
+      0%,
+      50% {
+        opacity: 1;
+      }
+
+      51%,
+      100% {
+        opacity: 0;
+      }
+    }
+
+    @media (max-width: 700px) {
+      .angelpedia-loader-guide {
+        top: 20px;
+        left: 20px;
+        right: 20px;
+      }
+
+      .angelpedia-loader-command {
+        left: 20px;
+        bottom: 20px;
+      }
+    }
+
+    /* 프린트할 때 로딩 화면 제외 */
+
+    @media print {
+      .angelpedia-loader {
+        display: none !important;
+      }
+    }
+  </style>
 </head>
 
-<body data-era="all">
+<body data-era="all" class="is-loading">
+
+  <!-- =============================
+       TYPING LOADING PAGE
+  ============================== -->
+
+  <div
+    class="angelpedia-loader"
+    id="angelpediaLoader"
+    aria-live="polite"
+  >
+    <div class="angelpedia-loader-inner">
+
+      <div class="angelpedia-loader-guide">
+
+        <p
+          class="angelpedia-loader-korean"
+          id="angelpediaLoaderKorean"
+        ></p>
+
+        <p
+          class="angelpedia-loader-english"
+          id="angelpediaLoaderEnglish"
+        ></p>
+
+      </div>
+
+      <p
+        class="angelpedia-loader-command"
+        id="angelpediaLoaderCommand"
+      ></p>
+
+    </div>
+  </div>
+
+
+  <!-- =============================
+       NAVIGATION
+  ============================== -->
 
   <nav class="pedia-nav">
     <a href="../index.html">HOME</a>
     <a href="../angelverse/angelverse.html">ANGELVERSE</a>
   </nav>
+
+
+  <!-- =============================
+       ERA MENU
+  ============================== -->
 
   <aside class="era-container">
     <ul class="era-list">
@@ -25,48 +238,78 @@
     </ul>
   </aside>
 
+
+  <!-- =============================
+       ANGELPEDIA GRID
+  ============================== -->
+
   <main class="pedia-grid">
 
     <!-- ANCIENT -->
+
     <section class="pedia-set" data-era-set="ancient">
 
       <figure class="wing-card slot-1 large-wing1">
-        <img src="ancient/ANCIENT NO.05.png" alt="Ancient No.01">
+        <img
+          src="ancient/ANCIENT NO.05.png"
+          alt="Ancient No.01"
+        >
         <figcaption>ANCIENT NO.01</figcaption>
       </figure>
 
       <figure class="wing-card slot-2 large-wing2">
-        <img src="ancient/ANCIENT NO.04.png" alt="Ancient No.02">
+        <img
+          src="ancient/ANCIENT NO.04.png"
+          alt="Ancient No.02"
+        >
         <figcaption>ANCIENT NO.02</figcaption>
       </figure>
 
       <figure class="wing-card slot-3 large-wing3">
-        <img src="ancient/ANCIENT NO.02.png" alt="Ancient No.03">
+        <img
+          src="ancient/ANCIENT NO.02.png"
+          alt="Ancient No.03"
+        >
         <figcaption>ANCIENT NO.03</figcaption>
       </figure>
 
       <figure class="wing-card slot-4 large-wing4">
-        <img src="ancient/ANCIENT NO.08.png" alt="Ancient No.04">
+        <img
+          src="ancient/ANCIENT NO.08.png"
+          alt="Ancient No.04"
+        >
         <figcaption>ANCIENT NO.04</figcaption>
       </figure>
 
       <figure class="wing-card slot-5 large-wing5">
-        <img src="ancient/ANCIENT NO.07.png" alt="Ancient No.05">
+        <img
+          src="ancient/ANCIENT NO.07.png"
+          alt="Ancient No.05"
+        >
         <figcaption>ANCIENT NO.05</figcaption>
       </figure>
 
       <figure class="wing-card slot-6 large-wing6">
-        <img src="ancient/ANCIENT NO.03.png" alt="Ancient No.06">
+        <img
+          src="ancient/ANCIENT NO.03.png"
+          alt="Ancient No.06"
+        >
         <figcaption>ANCIENT NO.06</figcaption>
       </figure>
 
       <figure class="wing-card slot-7 large-wing7">
-        <img src="ancient/ANCIENT NO.06.png" alt="Ancient No.07">
+        <img
+          src="ancient/ANCIENT NO.06.png"
+          alt="Ancient No.07"
+        >
         <figcaption>ANCIENT NO.07</figcaption>
       </figure>
 
       <figure class="wing-card slot-8 large-wing8">
-        <img src="ancient/ANCIENT NO.01.png" alt="Ancient No.08">
+        <img
+          src="ancient/ANCIENT NO.01.png"
+          alt="Ancient No.08"
+        >
         <figcaption>ANCIENT NO.08</figcaption>
       </figure>
 
@@ -74,439 +317,818 @@
 
 
     <!-- EARLY MEDIEVAL -->
-    <section class="pedia-set early-layout" data-era-set="early">
+
+    <section
+      class="pedia-set early-layout"
+      data-era-set="early"
+    >
 
       <figure class="wing-card slot-1 large-wing1">
-        <img src="earlymedieval/EARLY MEDIEVAL NO.01.png" alt="Early Medieval No.01">
+        <img
+          src="earlymedieval/EARLY MEDIEVAL NO.01.png"
+          alt="Early Medieval No.01"
+        >
         <figcaption>EARLY MEDIEVAL NO.01</figcaption>
       </figure>
 
       <figure class="wing-card slot-2 large-wing2">
-        <img src="earlymedieval/EARLY MEDIEVAL NO.02.png" alt="Early Medieval No.02">
+        <img
+          src="earlymedieval/EARLY MEDIEVAL NO.02.png"
+          alt="Early Medieval No.02"
+        >
         <figcaption>EARLY MEDIEVAL NO.02</figcaption>
       </figure>
 
       <figure class="wing-card slot-3 large-wing3">
-        <img src="earlymedieval/EARLY MEDIEVAL NO.03.png" alt="Early Medieval No.03">
+        <img
+          src="earlymedieval/EARLY MEDIEVAL NO.03.png"
+          alt="Early Medieval No.03"
+        >
         <figcaption>EARLY MEDIEVAL NO.03</figcaption>
       </figure>
 
       <figure class="wing-card slot-4 large-wing4">
-        <img src="earlymedieval/EARLY MEDIEVAL NO.04.png" alt="Early Medieval No.04">
+        <img
+          src="earlymedieval/EARLY MEDIEVAL NO.04.png"
+          alt="Early Medieval No.04"
+        >
         <figcaption>EARLY MEDIEVAL NO.04</figcaption>
       </figure>
 
       <figure class="wing-card slot-5 large-wing5">
-        <img src="earlymedieval/EARLY MEDIEVAL NO.05.png" alt="Early Medieval No.05">
+        <img
+          src="earlymedieval/EARLY MEDIEVAL NO.05.png"
+          alt="Early Medieval No.05"
+        >
         <figcaption>EARLY MEDIEVAL NO.05</figcaption>
       </figure>
 
       <figure class="wing-card slot-6 large-wing6">
-        <img src="earlymedieval/EARLY MEDIEVAL NO.06.png" alt="Early Medieval No.06">
+        <img
+          src="earlymedieval/EARLY MEDIEVAL NO.06.png"
+          alt="Early Medieval No.06"
+        >
         <figcaption>EARLY MEDIEVAL NO.06</figcaption>
       </figure>
 
       <figure class="wing-card slot-7 large-wing7">
-        <img src="earlymedieval/EARLY MEDIEVAL NO.07.png" alt="Early Medieval No.07">
+        <img
+          src="earlymedieval/EARLY MEDIEVAL NO.07.png"
+          alt="Early Medieval No.07"
+        >
         <figcaption>EARLY MEDIEVAL NO.07</figcaption>
       </figure>
 
       <figure class="wing-card slot-8 large-wing8">
-        <img src="earlymedieval/EARLY MEDIEVAL NO.08.png" alt="Early Medieval No.08">
+        <img
+          src="earlymedieval/EARLY MEDIEVAL NO.08.png"
+          alt="Early Medieval No.08"
+        >
         <figcaption>EARLY MEDIEVAL NO.08</figcaption>
       </figure>
 
     </section>
 
+
     <!-- ROMANESQUE -->
-    <section class="pedia-set romanesque-layout" data-era-set="romanesque">
 
-    <figure class="wing-card slot-1 roman-wing1">
-        <img src="romanesque/ROMANESQUE NO.01.png" alt="Romanesque No.01">
+    <section
+      class="pedia-set romanesque-layout"
+      data-era-set="romanesque"
+    >
+
+      <figure class="wing-card slot-1 roman-wing1">
+        <img
+          src="romanesque/ROMANESQUE NO.01.png"
+          alt="Romanesque No.01"
+        >
         <figcaption>ROMANESQUE NO.01</figcaption>
-    </figure>
+      </figure>
 
-    <figure class="wing-card slot-2 roman-wing2">
-        <img src="romanesque/ROMANESQUE NO.02.png" alt="Romanesque No.02">
+      <figure class="wing-card slot-2 roman-wing2">
+        <img
+          src="romanesque/ROMANESQUE NO.02.png"
+          alt="Romanesque No.02"
+        >
         <figcaption>ROMANESQUE NO.02</figcaption>
-    </figure>
+      </figure>
 
-    <figure class="wing-card slot-3 roman-wing3">
-        <img src="romanesque/ROMANESQUE NO.03.png" alt="Romanesque No.03">
+      <figure class="wing-card slot-3 roman-wing3">
+        <img
+          src="romanesque/ROMANESQUE NO.03.png"
+          alt="Romanesque No.03"
+        >
         <figcaption>ROMANESQUE NO.03</figcaption>
-    </figure>
+      </figure>
 
-    <figure class="wing-card slot-4 roman-wing4">
-        <img src="romanesque/ROMANESQUE NO.04.png" alt="Romanesque No.04">
+      <figure class="wing-card slot-4 roman-wing4">
+        <img
+          src="romanesque/ROMANESQUE NO.04.png"
+          alt="Romanesque No.04"
+        >
         <figcaption>ROMANESQUE NO.04</figcaption>
-    </figure>
+      </figure>
 
-    <figure class="wing-card slot-5 roman-wing5">
-        <img src="romanesque/ROMANESQUE NO.05.png" alt="Romanesque No.05">
+      <figure class="wing-card slot-5 roman-wing5">
+        <img
+          src="romanesque/ROMANESQUE NO.05.png"
+          alt="Romanesque No.05"
+        >
         <figcaption>ROMANESQUE NO.05</figcaption>
-    </figure>
+      </figure>
 
-    <figure class="wing-card slot-6 roman-wing6">
-        <img src="romanesque/ROMANESQUE NO.06.png" alt="Romanesque No.06">
+      <figure class="wing-card slot-6 roman-wing6">
+        <img
+          src="romanesque/ROMANESQUE NO.06.png"
+          alt="Romanesque No.06"
+        >
         <figcaption>ROMANESQUE NO.06</figcaption>
-    </figure>
+      </figure>
 
-    <figure class="wing-card slot-7 roman-wing7">
-        <img src="romanesque/ROMANESQUE NO.07.png" alt="Romanesque No.07">
+      <figure class="wing-card slot-7 roman-wing7">
+        <img
+          src="romanesque/ROMANESQUE NO.07.png"
+          alt="Romanesque No.07"
+        >
         <figcaption>ROMANESQUE NO.07</figcaption>
-    </figure>
+      </figure>
 
-    <figure class="wing-card slot-8 roman-wing8">
-        <img src="romanesque/ROMANESQUE NO.08.png" alt="Romanesque No.08">
+      <figure class="wing-card slot-8 roman-wing8">
+        <img
+          src="romanesque/ROMANESQUE NO.08.png"
+          alt="Romanesque No.08"
+        >
         <figcaption>ROMANESQUE NO.08</figcaption>
-    </figure>
+      </figure>
 
     </section>
+
 
     <!-- GOTHIC MEDIEVAL -->
-    <section class="pedia-set gothic-layout" data-era-set="gothic">
 
-        <figure class="wing-card slot-1 gothic-wing1">
-            <img src="gothicmedieval/GOTHIC MEDIEVAL NO.01.png" alt="Gothic Medieval No.01">
-            <figcaption>GOTHIC MEDIEVAL NO.01</figcaption>
-        </figure>
+    <section
+      class="pedia-set gothic-layout"
+      data-era-set="gothic"
+    >
 
-        <figure class="wing-card slot-2 gothic-wing2">
-            <img src="gothicmedieval/GOTHIC MEDIEVAL NO.02.png" alt="Gothic Medieval No.02">
-            <figcaption>GOTHIC MEDIEVAL NO.02</figcaption>
-        </figure>
+      <figure class="wing-card slot-1 gothic-wing1">
+        <img
+          src="gothicmedieval/GOTHIC MEDIEVAL NO.01.png"
+          alt="Gothic Medieval No.01"
+        >
+        <figcaption>GOTHIC MEDIEVAL NO.01</figcaption>
+      </figure>
 
-        <figure class="wing-card slot-3 gothic-wing3">
-            <img src="gothicmedieval/GOTHIC MEDIEVAL NO.03.png" alt="Gothic Medieval No.03">
-            <figcaption>GOTHIC MEDIEVAL NO.03</figcaption>
-        </figure>
+      <figure class="wing-card slot-2 gothic-wing2">
+        <img
+          src="gothicmedieval/GOTHIC MEDIEVAL NO.02.png"
+          alt="Gothic Medieval No.02"
+        >
+        <figcaption>GOTHIC MEDIEVAL NO.02</figcaption>
+      </figure>
 
-        <figure class="wing-card slot-4 gothic-wing4">
-            <img src="gothicmedieval/GOTHIC MEDIEVAL NO.04.png" alt="Gothic Medieval No.04">
-            <figcaption>GOTHIC MEDIEVAL NO.04</figcaption>
-        </figure>
+      <figure class="wing-card slot-3 gothic-wing3">
+        <img
+          src="gothicmedieval/GOTHIC MEDIEVAL NO.03.png"
+          alt="Gothic Medieval No.03"
+        >
+        <figcaption>GOTHIC MEDIEVAL NO.03</figcaption>
+      </figure>
 
-        <figure class="wing-card slot-5 gothic-wing5">
-            <img src="gothicmedieval/GOTHIC MEDIEVAL NO.05.png" alt="Gothic Medieval No.05">
-            <figcaption>GOTHIC MEDIEVAL NO.05</figcaption>
-        </figure>
+      <figure class="wing-card slot-4 gothic-wing4">
+        <img
+          src="gothicmedieval/GOTHIC MEDIEVAL NO.04.png"
+          alt="Gothic Medieval No.04"
+        >
+        <figcaption>GOTHIC MEDIEVAL NO.04</figcaption>
+      </figure>
 
-        <figure class="wing-card slot-6 gothic-wing6">
-            <img src="gothicmedieval/GOTHIC MEDIEVAL NO.06.png" alt="Gothic Medieval No.06">
-            <figcaption>GOTHIC MEDIEVAL NO.06</figcaption>
-        </figure>
+      <figure class="wing-card slot-5 gothic-wing5">
+        <img
+          src="gothicmedieval/GOTHIC MEDIEVAL NO.05.png"
+          alt="Gothic Medieval No.05"
+        >
+        <figcaption>GOTHIC MEDIEVAL NO.05</figcaption>
+      </figure>
 
-        <figure class="wing-card slot-7 gothic-wing7">
-            <img src="gothicmedieval/GOTHIC MEDIEVAL NO.07.png" alt="Gothic Medieval No.07">
-            <figcaption>GOTHIC MEDIEVAL NO.07</figcaption>
-        </figure>
+      <figure class="wing-card slot-6 gothic-wing6">
+        <img
+          src="gothicmedieval/GOTHIC MEDIEVAL NO.06.png"
+          alt="Gothic Medieval No.06"
+        >
+        <figcaption>GOTHIC MEDIEVAL NO.06</figcaption>
+      </figure>
 
-        <figure class="wing-card slot-8 gothic-wing8">
-            <img src="gothicmedieval/GOTHIC MEDIEVAL NO.08.png" alt="Gothic Medieval No.08">
-            <figcaption>GOTHIC MEDIEVAL NO.08</figcaption>
-        </figure>
+      <figure class="wing-card slot-7 gothic-wing7">
+        <img
+          src="gothicmedieval/GOTHIC MEDIEVAL NO.07.png"
+          alt="Gothic Medieval No.07"
+        >
+        <figcaption>GOTHIC MEDIEVAL NO.07</figcaption>
+      </figure>
+
+      <figure class="wing-card slot-8 gothic-wing8">
+        <img
+          src="gothicmedieval/GOTHIC MEDIEVAL NO.08.png"
+          alt="Gothic Medieval No.08"
+        >
+        <figcaption>GOTHIC MEDIEVAL NO.08</figcaption>
+      </figure>
 
     </section>
+
 
     <!-- RENAISSANCE -->
-    <section class="pedia-set renaissance-layout" data-era-set="renaissance">
 
-        <figure class="wing-card slot-1 renaissance-wing1">
-            <img src="renaissance/RENAISSANCE NO.01.png" alt="Renaissance No.01">
-            <figcaption>RENAISSANCE NO.01</figcaption>
-        </figure>
+    <section
+      class="pedia-set renaissance-layout"
+      data-era-set="renaissance"
+    >
 
-        <figure class="wing-card slot-2 renaissance-wing2">
-            <img src="renaissance/RENAISSANCE NO.02.png" alt="Renaissance No.02">
-            <figcaption>RENAISSANCE NO.02</figcaption>
-        </figure>
+      <figure class="wing-card slot-1 renaissance-wing1">
+        <img
+          src="renaissance/RENAISSANCE NO.01.png"
+          alt="Renaissance No.01"
+        >
+        <figcaption>RENAISSANCE NO.01</figcaption>
+      </figure>
 
-        <figure class="wing-card slot-3 renaissance-wing3">
-            <img src="renaissance/RENAISSANCE NO.03.png" alt="Renaissance No.03">
-            <figcaption>RENAISSANCE NO.03</figcaption>
-        </figure>
+      <figure class="wing-card slot-2 renaissance-wing2">
+        <img
+          src="renaissance/RENAISSANCE NO.02.png"
+          alt="Renaissance No.02"
+        >
+        <figcaption>RENAISSANCE NO.02</figcaption>
+      </figure>
 
-        <figure class="wing-card slot-4 renaissance-wing4">
-            <img src="renaissance/RENAISSANCE NO.04.png" alt="Renaissance No.04">
-            <figcaption>RENAISSANCE NO.04</figcaption>
-        </figure>
+      <figure class="wing-card slot-3 renaissance-wing3">
+        <img
+          src="renaissance/RENAISSANCE NO.03.png"
+          alt="Renaissance No.03"
+        >
+        <figcaption>RENAISSANCE NO.03</figcaption>
+      </figure>
 
-        <figure class="wing-card slot-5 renaissance-wing5">
-            <img src="renaissance/RENAISSANCE NO.05.png" alt="Renaissance No.05">
-            <figcaption>RENAISSANCE NO.05</figcaption>
-        </figure>
+      <figure class="wing-card slot-4 renaissance-wing4">
+        <img
+          src="renaissance/RENAISSANCE NO.04.png"
+          alt="Renaissance No.04"
+        >
+        <figcaption>RENAISSANCE NO.04</figcaption>
+      </figure>
 
-        <figure class="wing-card slot-6 renaissance-wing6">
-            <img src="renaissance/RENAISSANCE NO.06.png" alt="Renaissance No.06">
-            <figcaption>RENAISSANCE NO.06</figcaption>
-        </figure>
+      <figure class="wing-card slot-5 renaissance-wing5">
+        <img
+          src="renaissance/RENAISSANCE NO.05.png"
+          alt="Renaissance No.05"
+        >
+        <figcaption>RENAISSANCE NO.05</figcaption>
+      </figure>
 
-        <figure class="wing-card slot-7 renaissance-wing7">
-            <img src="renaissance/RENAISSANCE NO.07.png" alt="Renaissance No.07">
-            <figcaption>RENAISSANCE NO.07</figcaption>
-        </figure>
+      <figure class="wing-card slot-6 renaissance-wing6">
+        <img
+          src="renaissance/RENAISSANCE NO.06.png"
+          alt="Renaissance No.06"
+        >
+        <figcaption>RENAISSANCE NO.06</figcaption>
+      </figure>
 
-        <figure class="wing-card slot-8 renaissance-wing8">
-            <img src="renaissance/RENAISSANCE NO.08.png" alt="Renaissance No.08">
-            <figcaption>RENAISSANCE NO.08</figcaption>
-        </figure>
+      <figure class="wing-card slot-7 renaissance-wing7">
+        <img
+          src="renaissance/RENAISSANCE NO.07.png"
+          alt="Renaissance No.07"
+        >
+        <figcaption>RENAISSANCE NO.07</figcaption>
+      </figure>
+
+      <figure class="wing-card slot-8 renaissance-wing8">
+        <img
+          src="renaissance/RENAISSANCE NO.08.png"
+          alt="Renaissance No.08"
+        >
+        <figcaption>RENAISSANCE NO.08</figcaption>
+      </figure>
 
     </section>
 
+
     <!-- MODERN -->
-    <section class="pedia-set modern-layout" data-era-set="modern">
 
-        <figure class="wing-card slot-1 modern-wing1">
-            <img src="modern/MODERN NO.01.png" alt="Modern No.01">
-            <figcaption>MODERN NO.01</figcaption>
-        </figure>
+    <section
+      class="pedia-set modern-layout"
+      data-era-set="modern"
+    >
 
-        <figure class="wing-card slot-2 modern-wing2">
-            <img src="modern/MODERN NO.02.png" alt="Modern No.02">
-            <figcaption>MODERN NO.02</figcaption>
-        </figure>
+      <figure class="wing-card slot-1 modern-wing1">
+        <img src="modern/MODERN NO.01.png" alt="Modern No.01">
+        <figcaption>MODERN NO.01</figcaption>
+      </figure>
 
-        <figure class="wing-card slot-3 modern-wing3">
-            <img src="modern/MODERN NO.03.png" alt="Modern No.03">
-            <figcaption>MODERN NO.03</figcaption>
-        </figure>
+      <figure class="wing-card slot-2 modern-wing2">
+        <img src="modern/MODERN NO.02.png" alt="Modern No.02">
+        <figcaption>MODERN NO.02</figcaption>
+      </figure>
 
-        <figure class="wing-card slot-4 modern-wing4">
-            <img src="modern/MODERN NO.04.png" alt="Modern No.04">
-            <figcaption>MODERN NO.04</figcaption>
-        </figure>
+      <figure class="wing-card slot-3 modern-wing3">
+        <img src="modern/MODERN NO.03.png" alt="Modern No.03">
+        <figcaption>MODERN NO.03</figcaption>
+      </figure>
 
-        <figure class="wing-card slot-5 modern-wing5">
-            <img src="modern/MODERN NO.05.png" alt="Modern No.05">
-            <figcaption>MODERN NO.05</figcaption>
-        </figure>
+      <figure class="wing-card slot-4 modern-wing4">
+        <img src="modern/MODERN NO.04.png" alt="Modern No.04">
+        <figcaption>MODERN NO.04</figcaption>
+      </figure>
 
-        <figure class="wing-card slot-6 modern-wing6">
-            <img src="modern/MODERN NO.06.png" alt="Modern No.06">
-            <figcaption>MODERN NO.06</figcaption>
-        </figure>
+      <figure class="wing-card slot-5 modern-wing5">
+        <img src="modern/MODERN NO.05.png" alt="Modern No.05">
+        <figcaption>MODERN NO.05</figcaption>
+      </figure>
 
-        <figure class="wing-card slot-7 modern-wing7">
-            <img src="modern/MODERN NO.07.png" alt="Modern No.07">
-            <figcaption>MODERN NO.07</figcaption>
-        </figure>
+      <figure class="wing-card slot-6 modern-wing6">
+        <img src="modern/MODERN NO.06.png" alt="Modern No.06">
+        <figcaption>MODERN NO.06</figcaption>
+      </figure>
 
-        <figure class="wing-card slot-8 modern-wing8">
-            <img src="modern/MODERN NO.08.png" alt="Modern No.08">
-            <figcaption>MODERN NO.08</figcaption>
-        </figure>
+      <figure class="wing-card slot-7 modern-wing7">
+        <img src="modern/MODERN NO.07.png" alt="Modern No.07">
+        <figcaption>MODERN NO.07</figcaption>
+      </figure>
 
-        <figure class="wing-card slot-9 modern-wing9">
-            <img src="modern/MODERN NO.09.png" alt="Modern No.09">
-            <figcaption>MODERN NO.09</figcaption>
-        </figure>
+      <figure class="wing-card slot-8 modern-wing8">
+        <img src="modern/MODERN NO.08.png" alt="Modern No.08">
+        <figcaption>MODERN NO.08</figcaption>
+      </figure>
 
-        <figure class="wing-card slot-10 modern-wing10">
-            <img src="modern/MODERN NO.10.png" alt="Modern No.10">
-            <figcaption>MODERN NO.10</figcaption>
-        </figure>
+      <figure class="wing-card slot-9 modern-wing9">
+        <img src="modern/MODERN NO.09.png" alt="Modern No.09">
+        <figcaption>MODERN NO.09</figcaption>
+      </figure>
 
-        <figure class="wing-card slot-11 modern-wing11">
-            <img src="modern/MODERN NO.11.png" alt="Modern No.11">
-            <figcaption>MODERN NO.11</figcaption>
-        </figure>
+      <figure class="wing-card slot-10 modern-wing10">
+        <img src="modern/MODERN NO.10.png" alt="Modern No.10">
+        <figcaption>MODERN NO.10</figcaption>
+      </figure>
 
-        <figure class="wing-card slot-12 modern-wing12">
-            <img src="modern/MODERN NO.12.png" alt="Modern No.12">
-            <figcaption>MODERN NO.12</figcaption>
-        </figure>
+      <figure class="wing-card slot-11 modern-wing11">
+        <img src="modern/MODERN NO.11.png" alt="Modern No.11">
+        <figcaption>MODERN NO.11</figcaption>
+      </figure>
 
-        <figure class="wing-card slot-13 modern-wing13">
-            <img src="modern/MODERN NO.13.png" alt="Modern No.13">
-            <figcaption>MODERN NO.13</figcaption>
-        </figure>
+      <figure class="wing-card slot-12 modern-wing12">
+        <img src="modern/MODERN NO.12.png" alt="Modern No.12">
+        <figcaption>MODERN NO.12</figcaption>
+      </figure>
 
-        <figure class="wing-card slot-14 modern-wing14">
-            <img src="modern/MODERN NO.14.png" alt="Modern No.14">
-            <figcaption>MODERN NO.14</figcaption>
-        </figure>
+      <figure class="wing-card slot-13 modern-wing13">
+        <img src="modern/MODERN NO.13.png" alt="Modern No.13">
+        <figcaption>MODERN NO.13</figcaption>
+      </figure>
 
-        <figure class="wing-card slot-15 modern-wing15">
-            <img src="modern/MODERN NO.15.png" alt="Modern No.15">
-            <figcaption>MODERN NO.15</figcaption>
-        </figure>
+      <figure class="wing-card slot-14 modern-wing14">
+        <img src="modern/MODERN NO.14.png" alt="Modern No.14">
+        <figcaption>MODERN NO.14</figcaption>
+      </figure>
 
-        <figure class="wing-card slot-16 modern-wing16">
-            <img src="modern/MODERN NO.16.png" alt="Modern No.16">
-            <figcaption>MODERN NO.16</figcaption>
-        </figure>
+      <figure class="wing-card slot-15 modern-wing15">
+        <img src="modern/MODERN NO.15.png" alt="Modern No.15">
+        <figcaption>MODERN NO.15</figcaption>
+      </figure>
 
-        <figure class="wing-card slot-17 modern-wing17">
+      <figure class="wing-card slot-16 modern-wing16">
+        <img src="modern/MODERN NO.16.png" alt="Modern No.16">
+        <figcaption>MODERN NO.16</figcaption>
+      </figure>
+
+      <figure class="wing-card slot-17 modern-wing17">
         <img src="modern/MODERN NO.17.png" alt="Modern No.17">
         <figcaption>MODERN NO.17</figcaption>
-        </figure>
+      </figure>
 
-        <figure class="wing-card slot-18 modern-wing18">
+      <figure class="wing-card slot-18 modern-wing18">
         <img src="modern/MODERN NO.18.png" alt="Modern No.18">
         <figcaption>MODERN NO.18</figcaption>
-        </figure>
+      </figure>
 
     </section>
 
   </main>
 
-    <section class="print-book">
-        <article class="print-page" data-era="ancient">
-            <img src="print/ancient/ancient-01.jpg" alt="Ancient Print 01">
-        </article>
-        <article class="print-page" data-era="ancient">
-            <img src="print/ancient/ancient-02.jpg" alt="Ancient Print 02">
-        </article>
-        <article class="print-page" data-era="ancient">
-            <img src="print/ancient/ancient-03.jpg" alt="Ancient Print 03">
-        </article>
-        <article class="print-page" data-era="ancient">
-            <img src="print/ancient/ancient-04.jpg" alt="Ancient Print 04">
-        </article>
-        <article class="print-page" data-era="ancient">
-            <img src="print/ancient/ancient-05.jpg" alt="Ancient Print 05">
-        </article>
 
-        <article class="print-page" data-era="early">
-            <img src="print/earlymedieval/earlymedieval-01.jpg" alt="Early Medieval Print 01">
-        </article>
-        <article class="print-page" data-era="early">
-            <img src="print/earlymedieval/earlymedieval-02.jpg" alt="Early Medieval Print 02">
-        </article>
-        <article class="print-page" data-era="early">
-            <img src="print/earlymedieval/earlymedieval-03.jpg" alt="Early Medieval Print 03">
-        </article>
-        <article class="print-page" data-era="early">
-            <img src="print/earlymedieval/earlymedieval-04.jpg" alt="Early Medieval Print 04">
-        </article>
-        <article class="print-page" data-era="early">
-            <img src="print/earlymedieval/earlymedieval-05.jpg" alt="Early Medieval Print 05">
-        </article>
+  <!-- =============================
+       PRINT BOOK
+  ============================== -->
 
-        <article class="print-page" data-era="romanesque">
-            <img src="print/romanesque/romanesque-01.jpg" alt="Romanesque Print 01">
-        </article>
-        <article class="print-page" data-era="romanesque">
-            <img src="print/romanesque/romanesque-02.jpg" alt="Romanesque Print 02">
-        </article>
-        <article class="print-page" data-era="romanesque">
-            <img src="print/romanesque/romanesque-03.jpg" alt="Romanesque Print 03">
-        </article>
-        <article class="print-page" data-era="romanesque">
-            <img src="print/romanesque/romanesque-04.jpg" alt="Romanesque Print 04">
-        </article>
-        <article class="print-page" data-era="romanesque">
-            <img src="print/romanesque/romanesque-05.jpg" alt="Romanesque Print 05">
-        </article>
+  <section class="print-book">
 
-        <article class="print-page" data-era="gothic">
-            <img src="print/gothicmedieval/gothicmedieval-01.jpg" alt="Gothic Medieval Print 01">
-        </article>
-        <article class="print-page" data-era="gothic">
-            <img src="print/gothicmedieval/gothicmedieval-02.jpg" alt="Gothic Medieval Print 02">
-        </article>
-        <article class="print-page" data-era="gothic">
-            <img src="print/gothicmedieval/gothicmedieval-03.jpg" alt="Gothic Medieval Print 03">
-        </article>
-        <article class="print-page" data-era="gothic">
-            <img src="print/gothicmedieval/gothicmedieval-04.jpg" alt="Gothic Medieval Print 04">
-        </article>
-        <article class="print-page" data-era="gothic">
-            <img src="print/gothicmedieval/gothicmedieval-05.jpg" alt="Gothic Medieval Print 05">
-        </article>
+    <!-- ANCIENT PRINT -->
 
-        <article class="print-page" data-era="renaissance">
-            <img src="print/renaissance/renaissance-01.jpg" alt="Renaissance Print 01">
-        </article>
-        <article class="print-page" data-era="renaissance">
-            <img src="print/renaissance/renaissance-02.jpg" alt="Renaissance Print 02">
-        </article>
-        <article class="print-page" data-era="renaissance">
-            <img src="print/renaissance/renaissance-03.jpg" alt="Renaissance Print 03">
-        </article>
-        <article class="print-page" data-era="renaissance">
-            <img src="print/renaissance/renaissance-04.jpg" alt="Renaissance Print 04">
-        </article>
-        <article class="print-page" data-era="renaissance">
-            <img src="print/renaissance/renaissance-05.jpg" alt="Renaissance Print 05">
-        </article>
+    <article class="print-page" data-era="ancient">
+      <img
+        src="print/ancient/ancient-01.jpg"
+        alt="Ancient Print 01"
+      >
+    </article>
+
+    <article class="print-page" data-era="ancient">
+      <img
+        src="print/ancient/ancient-02.jpg"
+        alt="Ancient Print 02"
+      >
+    </article>
+
+    <article class="print-page" data-era="ancient">
+      <img
+        src="print/ancient/ancient-03.jpg"
+        alt="Ancient Print 03"
+      >
+    </article>
+
+    <article class="print-page" data-era="ancient">
+      <img
+        src="print/ancient/ancient-04.jpg"
+        alt="Ancient Print 04"
+      >
+    </article>
+
+    <article class="print-page" data-era="ancient">
+      <img
+        src="print/ancient/ancient-05.jpg"
+        alt="Ancient Print 05"
+      >
+    </article>
 
 
-        <article class="print-page" data-era="modern">
-            <img src="print/modern/modern-01.jpg" alt="Modern Print 01">
-        </article>
-        <article class="print-page" data-era="modern">
-            <img src="print/modern/modern-02.jpg" alt="Modern Print 02">
-        </article>
-        <article class="print-page" data-era="modern">
-            <img src="print/modern/modern-03.jpg" alt="Modern Print 03">
-        </article>
-        <article class="print-page" data-era="modern">
-            <img src="print/modern/modern-04.jpg" alt="Modern Print 04">
-        </article>
-        <article class="print-page" data-era="modern">
-            <img src="print/modern/modern-05.jpg" alt="Modern Print 05">
-        </article>
-        <article class="print-page" data-era="modern">
-            <img src="print/modern/modern-06.jpg" alt="Modern Print 06">
-        </article>
-        <article class="print-page" data-era="modern">
-            <img src="print/modern/modern-07.jpg" alt="Modern Print 07">
-        </article>
-        <article class="print-page" data-era="modern">
-            <img src="print/modern/modern-08.jpg" alt="Modern Print 08">
-        </article>
-        <article class="print-page" data-era="modern">
-            <img src="print/modern/modern-09.jpg" alt="Modern Print 09">
-        </article>
-        <article class="print-page" data-era="modern">
-            <img src="print/modern/modern-10.jpg" alt="Modern Print 10">
-        </article>
+    <!-- EARLY MEDIEVAL PRINT -->
 
-    </section>
+    <article class="print-page" data-era="early">
+      <img
+        src="print/earlymedieval/earlymedieval-01.jpg"
+        alt="Early Medieval Print 01"
+      >
+    </article>
 
-    <script>
-    const eraButtons = document.querySelectorAll('.era-list li');
-    const pediaSets = document.querySelectorAll('.pedia-set');
-    const printPages = document.querySelectorAll('.print-page');
+    <article class="print-page" data-era="early">
+      <img
+        src="print/earlymedieval/earlymedieval-02.jpg"
+        alt="Early Medieval Print 02"
+      >
+    </article>
 
-    eraButtons.forEach(button => {
-        button.addEventListener('click', () => {
+    <article class="print-page" data-era="early">
+      <img
+        src="print/earlymedieval/earlymedieval-03.jpg"
+        alt="Early Medieval Print 03"
+      >
+    </article>
+
+    <article class="print-page" data-era="early">
+      <img
+        src="print/earlymedieval/earlymedieval-04.jpg"
+        alt="Early Medieval Print 04"
+      >
+    </article>
+
+    <article class="print-page" data-era="early">
+      <img
+        src="print/earlymedieval/earlymedieval-05.jpg"
+        alt="Early Medieval Print 05"
+      >
+    </article>
+
+
+    <!-- ROMANESQUE PRINT -->
+
+    <article class="print-page" data-era="romanesque">
+      <img
+        src="print/romanesque/romanesque-01.jpg"
+        alt="Romanesque Print 01"
+      >
+    </article>
+
+    <article class="print-page" data-era="romanesque">
+      <img
+        src="print/romanesque/romanesque-02.jpg"
+        alt="Romanesque Print 02"
+      >
+    </article>
+
+    <article class="print-page" data-era="romanesque">
+      <img
+        src="print/romanesque/romanesque-03.jpg"
+        alt="Romanesque Print 03"
+      >
+    </article>
+
+    <article class="print-page" data-era="romanesque">
+      <img
+        src="print/romanesque/romanesque-04.jpg"
+        alt="Romanesque Print 04"
+      >
+    </article>
+
+    <article class="print-page" data-era="romanesque">
+      <img
+        src="print/romanesque/romanesque-05.jpg"
+        alt="Romanesque Print 05"
+      >
+    </article>
+
+
+    <!-- GOTHIC MEDIEVAL PRINT -->
+
+    <article class="print-page" data-era="gothic">
+      <img
+        src="print/gothicmedieval/gothicmedieval-01.jpg"
+        alt="Gothic Medieval Print 01"
+      >
+    </article>
+
+    <article class="print-page" data-era="gothic">
+      <img
+        src="print/gothicmedieval/gothicmedieval-02.jpg"
+        alt="Gothic Medieval Print 02"
+      >
+    </article>
+
+    <article class="print-page" data-era="gothic">
+      <img
+        src="print/gothicmedieval/gothicmedieval-03.jpg"
+        alt="Gothic Medieval Print 03"
+      >
+    </article>
+
+    <article class="print-page" data-era="gothic">
+      <img
+        src="print/gothicmedieval/gothicmedieval-04.jpg"
+        alt="Gothic Medieval Print 04"
+      >
+    </article>
+
+    <article class="print-page" data-era="gothic">
+      <img
+        src="print/gothicmedieval/gothicmedieval-05.jpg"
+        alt="Gothic Medieval Print 05"
+      >
+    </article>
+
+
+    <!-- RENAISSANCE PRINT -->
+
+    <article class="print-page" data-era="renaissance">
+      <img
+        src="print/renaissance/renaissance-01.jpg"
+        alt="Renaissance Print 01"
+      >
+    </article>
+
+    <article class="print-page" data-era="renaissance">
+      <img
+        src="print/renaissance/renaissance-02.jpg"
+        alt="Renaissance Print 02"
+      >
+    </article>
+
+    <article class="print-page" data-era="renaissance">
+      <img
+        src="print/renaissance/renaissance-03.jpg"
+        alt="Renaissance Print 03"
+      >
+    </article>
+
+    <article class="print-page" data-era="renaissance">
+      <img
+        src="print/renaissance/renaissance-04.jpg"
+        alt="Renaissance Print 04"
+      >
+    </article>
+
+    <article class="print-page" data-era="renaissance">
+      <img
+        src="print/renaissance/renaissance-05.jpg"
+        alt="Renaissance Print 05"
+      >
+    </article>
+
+
+    <!-- MODERN PRINT -->
+
+    <article class="print-page" data-era="modern">
+      <img src="print/modern/modern-01.jpg" alt="Modern Print 01">
+    </article>
+
+    <article class="print-page" data-era="modern">
+      <img src="print/modern/modern-02.jpg" alt="Modern Print 02">
+    </article>
+
+    <article class="print-page" data-era="modern">
+      <img src="print/modern/modern-03.jpg" alt="Modern Print 03">
+    </article>
+
+    <article class="print-page" data-era="modern">
+      <img src="print/modern/modern-04.jpg" alt="Modern Print 04">
+    </article>
+
+    <article class="print-page" data-era="modern">
+      <img src="print/modern/modern-05.jpg" alt="Modern Print 05">
+    </article>
+
+    <article class="print-page" data-era="modern">
+      <img src="print/modern/modern-06.jpg" alt="Modern Print 06">
+    </article>
+
+    <article class="print-page" data-era="modern">
+      <img src="print/modern/modern-07.jpg" alt="Modern Print 07">
+    </article>
+
+    <article class="print-page" data-era="modern">
+      <img src="print/modern/modern-08.jpg" alt="Modern Print 08">
+    </article>
+
+    <article class="print-page" data-era="modern">
+      <img src="print/modern/modern-09.jpg" alt="Modern Print 09">
+    </article>
+
+    <article class="print-page" data-era="modern">
+      <img src="print/modern/modern-10.jpg" alt="Modern Print 10">
+    </article>
+
+  </section>
+
+
+  <script>
+    /* =============================
+       TYPING INTRO
+    ============================== */
+
+    const angelpediaLoader =
+      document.getElementById("angelpediaLoader");
+
+    const angelpediaLoaderKorean =
+      document.getElementById("angelpediaLoaderKorean");
+
+    const angelpediaLoaderEnglish =
+      document.getElementById("angelpediaLoaderEnglish");
+
+    const angelpediaLoaderCommand =
+      document.getElementById("angelpediaLoaderCommand");
+
+    const loaderKoreanText =
+      "ANGELPEDIA에 기록된 시대별 날개 도상들의 상세 정보를 프린트하여 확인해보세요";
+
+    const loaderEnglishText =
+      "Print and review detailed information on the wing iconography of each era archived in ANGELPEDIA.";
+
+    const loaderCommandText =
+      "COMMAND + P";
+
+
+    function wait(milliseconds) {
+      return new Promise((resolve) => {
+        window.setTimeout(resolve, milliseconds);
+      });
+    }
+
+
+    function typeLoaderText(element, text, speed) {
+      return new Promise((resolve) => {
+        let index = 0;
+
+        element.textContent = "";
+        element.classList.add("is-typing");
+
+        function typeNextCharacter() {
+          if (index < text.length) {
+            element.textContent += text[index];
+            index += 1;
+
+            window.setTimeout(
+              typeNextCharacter,
+              speed
+            );
+
+            return;
+          }
+
+          element.classList.remove("is-typing");
+          resolve();
+        }
+
+        typeNextCharacter();
+      });
+    }
+
+
+    async function playAngelPediaIntro() {
+      await wait(300);
+
+      await typeLoaderText(
+        angelpediaLoaderKorean,
+        loaderKoreanText,
+        28
+      );
+
+      await wait(180);
+
+      await typeLoaderText(
+        angelpediaLoaderEnglish,
+        loaderEnglishText,
+        16
+      );
+
+      await wait(250);
+
+      await typeLoaderText(
+        angelpediaLoaderCommand,
+        loaderCommandText,
+        75
+      );
+
+      await wait(1300);
+
+      angelpediaLoader.classList.add("is-hidden");
+      document.body.classList.remove("is-loading");
+
+      window.setTimeout(() => {
+        angelpediaLoader.remove();
+      }, 850);
+    }
+
+
+    playAngelPediaIntro();
+
+
+    /* =============================
+       ERA FILTER
+    ============================== */
+
+    const eraButtons =
+      document.querySelectorAll(".era-list li");
+
+    const pediaSets =
+      document.querySelectorAll(".pedia-set");
+
+    const printPages =
+      document.querySelectorAll(".print-page");
+
+
+    eraButtons.forEach((button) => {
+      button.addEventListener("click", () => {
         const selectedEra = button.dataset.era;
 
-        document.body.setAttribute('data-era', selectedEra);
+        document.body.setAttribute(
+          "data-era",
+          selectedEra
+        );
 
-        eraButtons.forEach(item => item.classList.remove('active'));
-        button.classList.add('active');
+        eraButtons.forEach((item) => {
+          item.classList.remove("active");
+        });
 
-        pediaSets.forEach(set => {
-            if (selectedEra === 'all' || set.dataset.eraSet === selectedEra) {
-            set.classList.remove('hidden');
-            } else {
-            set.classList.add('hidden');
-            }
+        button.classList.add("active");
+
+        pediaSets.forEach((set) => {
+          const isSelected =
+            selectedEra === "all" ||
+            set.dataset.eraSet === selectedEra;
+
+          if (isSelected) {
+            set.classList.remove("hidden");
+          } else {
+            set.classList.add("hidden");
+          }
         });
-        });
+      });
     });
 
-    window.addEventListener('beforeprint', () => {
-        const selectedEra = document.body.getAttribute('data-era') || 'all';
 
-        printPages.forEach(page => {
-        if (selectedEra === 'all' || page.dataset.era === selectedEra) {
-            page.classList.remove('print-hidden');
+    /* =============================
+       PRINT FILTER
+    ============================== */
+
+    window.addEventListener("beforeprint", () => {
+      const selectedEra =
+        document.body.getAttribute("data-era") || "all";
+
+      printPages.forEach((page) => {
+        const shouldPrint =
+          selectedEra === "all" ||
+          page.dataset.era === selectedEra;
+
+        if (shouldPrint) {
+          page.classList.remove("print-hidden");
         } else {
-            page.classList.add('print-hidden');
+          page.classList.add("print-hidden");
         }
-        });
+      });
     });
 
-    window.addEventListener('afterprint', () => {
-        printPages.forEach(page => {
-        page.classList.remove('print-hidden');
-        });
+
+    window.addEventListener("afterprint", () => {
+      printPages.forEach((page) => {
+        page.classList.remove("print-hidden");
+      });
     });
-    </script>
+  </script>
 
 </body>
 </html>

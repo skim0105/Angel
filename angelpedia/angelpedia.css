@@ -8,7 +8,7 @@ html,
 body {
   width: 100%;
   min-height: 100%;
-  background: #ffffff;
+  background: #ececec;
   color: #000000;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
@@ -21,7 +21,7 @@ body {
 .pedia-nav {
   position: fixed;
   top: 18px;
-  right: 24px;
+  right: 34px;
   z-index: 1000;
 
   display: flex;
@@ -42,7 +42,7 @@ body {
 /* 왼쪽 시대 카테고리 */
 .era-container {
   position: fixed;
-  top: 28px;
+  top: 18px;
   left: 34px;
   z-index: 1000;
 }
@@ -51,13 +51,13 @@ body {
   list-style: none;
 
   display: flex;
-  flex-direction: column;
-  gap: 5px;
+  flex-direction: row;
+  gap: 38px;
 }
 
 .era-list li {
-  font-size: 9px;
-  line-height: 1.1;
+  font-size: 11px;
+  line-height: 1.3;
 
   cursor: pointer;
   color: #000;
@@ -73,13 +73,13 @@ body {
 
 .pedia-grid {
   width: calc(100vw - 64px);
-  margin: 48px auto;
+  margin: 45px auto;
   padding-top: 0 !important;
 }
 
 .pedia-set {
   width: 100%;
-  margin-bottom: 42px;
+  margin-bottom: 40px;
 
   display: grid;
   grid-template-columns: 1.15fr 1.15fr 1.65fr 1.45fr 1.45fr 1.45fr;

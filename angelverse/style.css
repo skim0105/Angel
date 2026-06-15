@@ -54,7 +54,7 @@ html, body {
   background-size: calc(40%) auto !important; 
   
   /* 투명도를 원하시는 대로 조정하세요 (0.8은 꽤 선명함) */
-  opacity: 0.3 !important; 
+  opacity: 0.6 !important; 
   
   /* 📌 z-index는 -1로 유지
      이렇게 하면 body 뒤(body가 투명하니까 보임)에 위치하여
@@ -120,7 +120,7 @@ html, body {
   display: flex; 
   align-items: center; 
   justify-content: center;
-  font-size: 14px;
+  font-size: 20px;
   transition: all 0.2s;
 }
 
@@ -143,12 +143,12 @@ html, body {
   list-style: none;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 7px;
 }
 
 .era-list li {
   /* 📌 창 크기에 맞춰 폰트 사이즈만 반응 */
-  font-size: clamp(8px, 1vw, 9px); 
+  font-size: clamp(10px, 1vw, 9px); 
   cursor: pointer;
   opacity: 0.4;
   transition: opacity 0.3s ease;
@@ -313,7 +313,7 @@ html, body {
 .detail-container {
   /* 💡 [핵심] 자바스크립트가 이 .detail-container의 fixed 좌표(left, top)를 계속 업데이트합니다. */
   
-  width: 320px; /* 너비를 고정 */
+  width: 380px; /* 너비를 고정 */
   height: auto; /* 높이는 내용에 맞게 자동 */
   background: #fff;
   color: #000;
@@ -322,7 +322,7 @@ html, body {
   display: flex;
   flex-direction: column;
   gap: 20px;
-  padding: 30px;
+  padding: 25px;
   box-sizing: border-box;
   
   /* 📌 수정: 중요: 자바스크립트 좌표 수신을 위해 fixed 사용 */
@@ -349,7 +349,7 @@ html, body {
 /* 6.3 📌 내부 이미지 영역 (너비 축소에 맞춰 조정) */
 .detail-img-area {
   width: 100%;
-  height: 200px; /* 이미지 영역 높이 고정 */
+  height: 450px; /* 이미지 영역 높이 고정 */
   overflow: hidden;
   display: flex;
   align-items: center;
@@ -374,11 +374,11 @@ html, body {
 }
 
 #detailTitle {
-  font-size: 15px; 
+  font-size: 14px; 
   line-height: 1.3;
   font-weight: 500;
-  letter-spacing: 0.01em;
-  margin-bottom: 14px;
+  letter-spacing: -0.01em;
+  margin-bottom: 15px;
   word-break: keep-all;
   border-bottom: 0.3px solid #000;
   padding-bottom: 10px;
@@ -387,7 +387,7 @@ html, body {
 /* 메타데이터 격자 (너비 축소에 맞춰 조정) */
 .detail-meta-grid {
   width: 100%;
-  margin-bottom: 20px;
+  margin-bottom: 0px;
 }
 
 .meta-row {
@@ -436,8 +436,8 @@ html, body {
   position: absolute;
   top: 15px;
   right: 20px;
-  font-size: 30px;
-  line-height: 1;
+  font-size: 18px;
+  line-height: 1.5;
   cursor: pointer;
   font-weight: 300;
 }
