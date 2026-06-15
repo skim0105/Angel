@@ -73,7 +73,8 @@ body {
 
 .pedia-grid {
   width: calc(100vw - 64px);
-  margin: 210px auto 48px auto;
+  margin: 48px auto;
+  padding-top: 0 !important;
 }
 
 .pedia-set {
@@ -233,24 +234,8 @@ body {
 /* 작은 화면 대응 */
 @media (max-width: 900px) {
   .pedia-grid {
-    width: calc(100vw - 32px);
-    margin: 160px auto 32px auto;
-
-    grid-template-columns: repeat(2, 1fr);
-    grid-template-rows: none;
-  }
-
-  .slot-1,
-  .slot-2,
-  .slot-3,
-  .slot-4,
-  .slot-5,
-  .slot-6,
-  .slot-7,
-  .slot-8 {
-    grid-column: auto;
-    grid-row: auto;
-    height: 260px;
+    width: calc(100vw - 64px);
+    margin: 145px auto 48px auto;
   }
 
   .pedia-nav {
@@ -816,66 +801,73 @@ body {
 
 
 @media print {
-  @page {
-    size: A4 landscape;
-    margin: 0;
-  }
+@page {
+size: A4 portrait;
+margin: 0;
+}
+html,
+body {
+width: 210mm !important;
+height: auto !important;
+margin: 0 !important;
+padding: 0 !important;
+background: #fff !important;
+overflow: visible !important;
+}
+.pedia-nav,
+.era-container,
+.pedia-grid {
+display: none !important;
+}
+.print-book {
+display: block !important;
+width: 210mm !important;
+height: auto !important;
+margin: 0 !important;
+padding: 0 !important;
+}
+.print-page {
+position: relative;
+width: 210mm !important;
+height: 297mm !important;
+margin: 0 !important;
+padding: 0 !important;
+display: block !important;
+overflow: hidden !important;
+background: #fff !important;
+line-height: 0;
+break-inside: avoid !important;
+page-break-inside: avoid !important;
+break-after: page;
+page-break-after: always;
 
-  html,
-  body {
-    width: 297mm;
-    height: 210mm;
-    margin: 0 !important;
-    padding: 0 !important;
-    background: #fff !important;
-    overflow: visible !important;
-  }
-
-  .pedia-nav,
-  .era-container,
-  .pedia-grid {
-    display: none !important;
-  }
-
-  .print-book {
-    display: block !important;
-    width: 297mm !important;
-    height: auto !important;
-    margin: 0 !important;
-    padding: 0 !important;
-  }
-
-  .print-page {
-    width: 297mm !important;
-    height: 210mm !important;
-
-    margin: 0 !important;
-    padding: 0 !important;
-
-    display: block !important;
-    page-break-after: always;
-    break-after: page;
-
-    overflow: hidden !important;
-    background: #fff;
-  }
-
-  .print-page img {
-    width: 297mm !important;
-    height: 210mm !important;
-    object-fit: cover;
-    display: block !important;
-
-    margin: 0 !important;
-    padding: 0 !important;
-  }
-
-  .print-page.print-hidden {
-    display: none !important;
-  }
-
-  .print-page:last-child {
-    page-break-after: auto;
-    break-after: auto;
-  }
+-webkit-print-color-adjust: exact;
+print-color-adjust: exact;
+}
+.print-page img {
+width: 210mm !important;
+height: 297mm !important;
+object-fit: contain;
+display: block !important;
+margin: 0 !important;
+padding: 0 !important;
+}
+/* A4 세로를 위·아래 A5로 나누는 가운데 절취선 */
+.print-page::after {
+content: "";
+position: absolute;
+left: 0;
+top: 148.5mm;
+width: 210mm;
+border-top: 0.25mm dashed #777;
+z-index: 10;
+pointer-events: none;
+}
+.print-page.print-hidden {
+display: none !important;
+}
+.print-page {
+break-after: auto;
+page-break-after: auto;
+}
 }

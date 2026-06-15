@@ -445,21 +445,13 @@
             <span>PLACE</span>
             <p id="detailPlace">UNKNOWN</p>
           </div>
-        </div>
 
-        <div class="extra-data">
-          <div class="data-block">
-            <label>TYPE & FUNCTION</label>
-            <p id="detailType">데이터가 없습니다.</p>
+          <div class="meta-row">
+            <span>TYPE</span>
+            <p id="detailType">데이터가 없습니다</p>
           </div>
         </div>
 
-        <div class="extra-data">
-          <div class="data-block">
-            <label>SOCIAL CONTEXT</label>
-            <p id="detailContext">데이터가 없습니다.</p>
-          </div>
-        </div>
 
         <p id="detailWing"></p>
       </div>
@@ -486,7 +478,6 @@
         <input type="text" id="input-artist" placeholder="ARTIST" class="scan-input">
         <input type="text" id="input-year" placeholder="YEAR" class="scan-input">
         <input type="text" id="input-place" placeholder="PLACE" class="scan-input">
-        <textarea id="input-context" placeholder="SOCIAL CONTEXT" class="scan-input" rows="1"></textarea>
         
         <div class="scan-close-guide">CLICK [X] TO UPLOAD TO THE ANGEL ORBIT</div>
 
@@ -522,491 +513,560 @@
   <script src="https://www.gstatic.com/firebasejs/9.10.0/firebase-firestore-compat.js"></script>
 
 <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      const firebaseConfig = {
-        apiKey: "AIzaSyC-U2yBTcggU2XT6a8ufAR2rQrGCnUq8rw",
-        authDomain: "angel-orbit.firebaseapp.com",
-        projectId: "angel-orbit",
-        storageBucket: "angel-orbit.firebasestorage.app",
-        messagingSenderId: "556072347425",
-        appId: "1:556072347425:web:7247db6925f3309fe18060"
+document.addEventListener('DOMContentLoaded', () => {
+  const firebaseConfig = {
+    apiKey: "AIzaSyC-U2yBTcggU2XT6a8ufAR2rQrGCnUq8rw",
+    authDomain: "angel-orbit.firebaseapp.com",
+    projectId: "angel-orbit",
+    storageBucket: "angel-orbit.firebasestorage.app",
+    messagingSenderId: "556072347425",
+    appId: "1:556072347425:web:7247db6925f3309fe18060"
+  };
+
+  if (!firebase.apps.length) {
+    firebase.initializeApp(firebaseConfig);
+  }
+
+  const storage = firebase.storage();
+  const db = firebase.firestore();
+
+  const root = document.documentElement;
+  const world = document.getElementById('world');
+  const layers = document.querySelectorAll('.orbit-layer');
+  const scene = document.getElementById('scene');
+  const infoPanel = document.getElementById('infoPanel');
+  const aboutBtn = document.getElementById('aboutBtn');
+  const aboutOverlay = document.getElementById('aboutOverlay');
+  const uploadBtn = document.getElementById('uploadBtn');
+  const uploadModal = document.getElementById('uploadModal');
+  const closeModal = document.querySelector('.close-modal');
+  const zoomInBtn = document.getElementById('zoomIn');
+  const zoomOutBtn = document.getElementById('zoomOut');
+  const dropArea = document.getElementById('drop-area');
+  const fileInput = document.getElementById('fileInput');
+  const statusText = document.getElementById('status-text');
+  const previewImg = document.getElementById('preview-img');
+  const detailOverlay = document.getElementById('detailOverlay');
+  const detailClose = document.getElementById('detailClose');
+  const indexOpenBtn = document.getElementById('indexOpenBtn');
+  const indexOverlay = document.getElementById('indexOverlay');
+  const indexCloseBtn = document.getElementById('indexCloseBtn');
+  const indexGrid = document.getElementById('indexGrid');
+
+  const eraData = {
+    layer1: {
+      name: 'Ancient',
+      concept: 'Transcendental',
+      reason: '비인간적 비례, 기하학적 형상, 압도적 크기 및 하이브리드된 도상이 고대 양식의 초월적 특성을 증명합니다.'
+    },
+    layer3: {
+      name: 'Early Medieval',
+      concept: 'Symbolic',
+      reason: '평면성, 대칭적 구도, 정보의 아이콘화 및 선명한 윤곽선이 초기 중세의 상징적 도상학을 나타냅니다.'
+    },
+    layer5: {
+      name: 'Romanesque',
+      concept: 'Monolithic',
+      reason: '묵직한 물성, 부동의 자세, 엄숙하고 투박한 표정이 로마네스크의 수호적 부도성을 보여줍니다.'
+    },
+    layer2: {
+      name: 'Gothic Medieval',
+      concept: 'Ethereal',
+      reason: '유려한 곡선, 빛의 찬란함, 빛의 투과 효과 및 수직적 상승 구도가 고딕의 화려한 미학을 반영합니다.'
+    },
+    layer4: {
+      name: 'Renaissance',
+      concept: 'Humanistic',
+      reason: '해부학적으로 완벽한 인체, 친근한 미소, 정서적 교감이 인본주의적 이상 세계를 형상화합니다.'
+    },
+    layer6: {
+      name: 'Modern',
+      concept: 'Deconstructed',
+      reason: '심리적 투영과 형상의 해체, 파편화된 구도가 현대 예술의 해체주의적 관점을 드러냅니다.'
+    }
+  };
+
+  let zoom = 1;
+  let rotateX = 15;
+  let rotateY = 0;
+  let isDragging = false;
+  let prevX = 0;
+  let prevY = 0;
+  let hoverTimer = null;
+  let activeAngel = null;
+  let pendingScanResult = null;
+
+  function update3D() {
+    zoom = Math.min(Math.max(zoom, 0.4), 3.5);
+    root.style.setProperty('--zoom', zoom);
+    root.style.setProperty('--rotateX', `${rotateX}deg`);
+    root.style.setProperty('--rotateY', `${rotateY}deg`);
+  }
+
+  function setText(id, value) {
+    const element = document.getElementById(id);
+    if (element) element.innerText = value;
+  }
+
+  function setImage(id, src) {
+    const element = document.getElementById(id);
+    if (element) element.src = src;
+  }
+
+  function hideDetailModal() {
+    clearTimeout(hoverTimer);
+    if (detailOverlay) {
+      detailOverlay.style.display = 'none';
+      detailOverlay.classList.remove('tracking-mode');
+    }
+    activeAngel = null;
+  }
+
+  function updateModalPosition() {
+    if (!activeAngel || !detailOverlay) return;
+
+    const modalContainer = detailOverlay.querySelector('.detail-container');
+    if (!modalContainer) return;
+
+    const angelRect = activeAngel.getBoundingClientRect();
+    const modalWidth = modalContainer.offsetWidth || 520;
+    const modalHeight = modalContainer.offsetHeight || 500;
+    const viewWidth = window.innerWidth;
+    const viewHeight = window.innerHeight;
+    const safeMargin = 20;
+
+    let modalX = angelRect.right + 20;
+    let modalY = angelRect.top + (angelRect.height / 2) - (modalHeight / 2);
+
+    if (modalY < safeMargin) {
+      modalY = safeMargin;
+    }
+
+    if (modalY + modalHeight > viewHeight - safeMargin) {
+      modalY = Math.max(safeMargin, viewHeight - modalHeight - safeMargin);
+    }
+
+    if (modalX + modalWidth > viewWidth - safeMargin) {
+      modalX = angelRect.left - modalWidth - 20;
+    }
+
+    if (modalX < safeMargin) {
+      modalX = safeMargin;
+    }
+
+    modalContainer.style.position = 'fixed';
+    modalContainer.style.left = `${modalX}px`;
+    modalContainer.style.top = `${modalY}px`;
+    modalContainer.style.transform = 'none';
+    modalContainer.style.margin = '0';
+  }
+
+  function openDetailFromData(data, trackingItem = null) {
+    if (!detailOverlay) return;
+
+    setImage('detailImg', data.src || '');
+    setText('detailTitle', (data.title || 'UNTITLED').toUpperCase());
+    setText('detailArtist', data.artist || 'UNKNOWN');
+    setText('detailYear', data.year || 'UNKNOWN');
+    setText('detailPlace', data.place || 'UNKNOWN');
+    setText('detailType', data.type || '데이터가 없습니다.');
+    setText('detailWing', data.wing || '');
+
+    detailOverlay.style.display = 'flex';
+
+    if (trackingItem) {
+      detailOverlay.classList.add('tracking-mode');
+      activeAngel = trackingItem;
+      updateModalPosition();
+    } else {
+      detailOverlay.classList.remove('tracking-mode');
+      activeAngel = null;
+
+      const modalContainer = detailOverlay.querySelector('.detail-container');
+      if (modalContainer) {
+        modalContainer.style.position = '';
+        modalContainer.style.left = '';
+        modalContainer.style.top = '';
+        modalContainer.style.transform = '';
+        modalContainer.style.margin = '0 auto';
+      }
+    }
+  }
+
+  function bindEvents(item) {
+    item.onmouseenter = () => {
+      hideDetailModal();
+
+      const imgEl = item.querySelector('img');
+      const data = {
+        title: item.getAttribute('data-title') || 'UNTITLED',
+        artist: item.getAttribute('data-artist') || 'UNKNOWN',
+        year: item.getAttribute('data-year') || 'UNKNOWN',
+        place: item.getAttribute('data-place') || 'UNKNOWN',
+        // 기존 HTML의 data-type 값을 그대로 불러옵니다.
+        type: item.getAttribute('data-type') || '데이터가 없습니다.',
+        wing: item.getAttribute('data-wing') || '',
+        src: imgEl ? imgEl.src : ''
       };
 
-      firebase.initializeApp(firebaseConfig);
+      openDetailFromData(data, item);
 
-      const storage = firebase.storage();
-      const db = firebase.firestore();
+      if (infoPanel) infoPanel.classList.remove('active');
 
-      const root = document.documentElement;
-      const world = document.getElementById('world');
-      const layers = document.querySelectorAll('.orbit-layer');
-      const scene = document.getElementById('scene');
-      const infoPanel = document.getElementById('infoPanel');
-      const aboutBtn = document.getElementById('aboutBtn');
-      const aboutOverlay = document.getElementById('aboutOverlay');
-      const uploadBtn = document.getElementById('uploadBtn');
-      const uploadModal = document.getElementById('uploadModal');
-      const closeModal = document.querySelector('.close-modal');
-      const eraMenuBtn = document.getElementById('eraMenuBtn');
-      const eraList = document.getElementById('eraList');
-      const zoomInBtn = document.getElementById('zoomIn');
-      const zoomOutBtn = document.getElementById('zoomOut');
-      const dropArea = document.getElementById('drop-area');
-      const fileInput = document.getElementById('fileInput');
-      const statusText = document.getElementById('status-text');
-      const previewImg = document.getElementById('preview-img');
-      const detailOverlay = document.getElementById('detailOverlay');
-      const detailClose = document.getElementById('detailClose');
+      hoverTimer = setTimeout(() => {
+        hideDetailModal();
+      }, 3000);
+    };
 
-      const indexOpenBtn = document.getElementById('indexOpenBtn');
-      const indexOverlay = document.getElementById('indexOverlay');
-      const indexCloseBtn = document.getElementById('indexCloseBtn');
-      const indexGrid = document.getElementById('indexGrid');
+    item.onmousemove = () => {
+      if (activeAngel) updateModalPosition();
+    };
+  }
 
-      const eraData = {
-        layer1: { name: "Ancient", concept: "Transcendental", reason: "비인간적 비례, 기하학적 형상, 압도적 크기 및 하이브리드된 도상이 고대 양식의 초월적 특성을 증명합니다." },
-        layer3: { name: "Early Medieval", concept: "Symbolic", reason: "평면성, 대칭적 구도, 정보의 아이콘화 및 선명한 윤곽선이 초기 중세의 상징적 도상학을 나타냅니다." },
-        layer5: { name: "Romanesque", concept: "Monolithic", reason: "묵직한 물성, 부동의 자세, 엄숙하고 투박한 표정이 로마네스크의 수호적 부도성을 보여줍니다." },
-        layer2: { name: "Gothic Medieval", concept: "Ethereal", reason: "유려한 곡선, 빛의 찬란함, 빛의 투과 효과 및 수직적 상승 구도가 고딕의 화려한 미학을 반영합니다." },
-        layer4: { name: "Renaissance", concept: "Humanistic", reason: "해부학적으로 완벽한 인체, 친근한 미소, 정서적 교감이 인본주의적 이상 세계를 형상화합니다." },
-        layer6: { name: "Modern", concept: "Deconstructed", reason: "심리적 투영과 형상의 해체, 파편화된 구도가 현대 예술의 해체주의적 관점을 드러냅니다." }
-      };
+  function resetModal() {
+    if (previewImg) previewImg.style.display = 'none';
 
-      let zoom = 1;
-      let rotateX = 15;
-      let rotateY = 0;
-      let isDragging = false;
-      let prevX, prevY;
+    const dropText = document.getElementById('drop-text');
+    if (dropText) dropText.style.display = 'block';
 
-      function update3D() {
-        zoom = Math.min(Math.max(zoom, 0.4), 3.5);
-        root.style.setProperty('--zoom', zoom);
-        root.style.setProperty('--rotateX', `${rotateX}deg`);
-        root.style.setProperty('--rotateY', `${rotateY}deg`);
-      }
+    const uploadInputs = document.getElementById('upload-inputs');
+    if (uploadInputs) uploadInputs.style.display = 'none';
 
-      if (zoomInBtn) { zoomInBtn.onclick = () => { zoom += 0.2; update3D(); }; }
-      if (zoomOutBtn) { zoomOutBtn.onclick = () => { zoom -= 0.2; update3D(); }; }
+    document.querySelectorAll('.scan-input').forEach((element) => {
+      element.style.display = 'block';
+      element.value = '';
+    });
 
-      scene.onpointerdown = (e) => {
-        if (e.target.closest('.controls, .top-nav, .side-panel, .modal, .about-overlay, #detailOverlay')) return;
-        isDragging = true;
-        prevX = e.clientX; prevY = e.clientY;
-      };
+    const guideEl = document.querySelector('.scan-close-guide');
+    if (guideEl) guideEl.style.display = 'block';
 
-      window.onpointermove = (e) => {
-        if (!isDragging) return;
-        rotateY += (e.clientX - prevX) * 0.25;
-        rotateX -= (e.clientY - prevY) * 0.25;
-        update3D();
-        prevX = e.clientX; prevY = e.clientY;
-      };
+    const loadingContainer = document.getElementById('loading-container');
+    if (loadingContainer) loadingContainer.style.display = 'none';
 
-      window.onpointerup = () => { isDragging = false; };
+    if (statusText) statusText.innerText = 'Ready to scan...';
+  }
 
-      if (detailClose) {
-        detailClose.onclick = (e) => {
-          e.stopPropagation();
-          hideDetailModal(); // 닫기 버튼 클릭 시 추적 중단 및 숨김
-        };
-      }
+  async function startScan() {
+    if (!dropArea || !previewImg || !statusText) return;
 
-      if (detailOverlay) {
-        // 모달 배경 클릭 시에도 닫기 (추적 중엔 pointer-events: none이라 작동 안 함, 인덱스 등에서 사용)
-        detailOverlay.onclick = (e) => {
-          if (e.target === detailOverlay) hideDetailModal();
-        };
-      }
+    dropArea.classList.add('is-scanning');
+    previewImg.classList.add('x-ray-active');
+    statusText.innerText = 'X-RAY CAPTURING...';
 
-      // 📌 [삭제] 기존 showInfo 및 hideInfoAfterDelay 함수 삭제됨.
+    await new Promise((resolve) => setTimeout(resolve, 3000));
 
-      // ---------------------------------------------------------
-      // 📌 [핵심 추가/수정] 3초 추적 전용 변수 및 함수
-      // ---------------------------------------------------------
-      let hoverTimer = null; // 3초 타이머용
-      let activeAngel = null; // 현재 추적 중인 천사 이미지 (.orbit-item)
+    const eraKeys = Object.keys(eraData);
+    const randomEra = eraKeys[Math.floor(Math.random() * eraKeys.length)];
+    const meta = { ...eraData[randomEra] };
 
-      // 모달을 숨기고 추적을 초기화하는 함수
-      function hideDetailModal() {
-        clearTimeout(hoverTimer);
-        if (detailOverlay) {
-          detailOverlay.style.display = 'none';
-          detailOverlay.classList.remove('tracking-mode'); // CSS 애니메이션용 클래스 제거
-        }
-        activeAngel = null; // 추적 대상 초기화
-      }
+    previewImg.classList.remove('x-ray-active');
+    statusText.innerHTML = `
+      <div class="scan-result-title">${meta.name.toUpperCase()}</div>
+      <div class="scan-result-reason">${meta.reason}</div>
+    `;
 
-      // 📌 [완벽 수정] 화면 경계를 감지하여 모달 위치 유동적 업데이트
-      function updateModalPosition() {
-        if (!activeAngel || !detailOverlay) return;
+    const uploadInputs = document.getElementById('upload-inputs');
+    if (uploadInputs) uploadInputs.style.display = 'block';
 
-        const modalContainer = detailOverlay.querySelector('.detail-container');
-        if (!modalContainer) return;
+    pendingScanResult = {
+      src: previewImg.src,
+      eraId: randomEra,
+      meta
+    };
 
-        // 1. 천사 이미지(.orbit-item)의 현재 화면 좌표(getBoundingClientRect)를 가져옵니다.
-        const angelRect = activeAngel.getBoundingClientRect();
-        
-        // 2. 모달 컨테이너의 현재 크기(너비, 높이)를 가져옵니다. (렌더링 된 후여야 함)
-        const modalWidth = modalContainer.offsetWidth || 320; // 기본값 320px
-        const modalHeight = modalContainer.offsetHeight || 400; // 대략적인 기본값
+    dropArea.classList.remove('is-scanning');
+  }
 
-        // 3. 현재 브라우저 화면(Viewport)의 크기를 가져옵니다.
-        const viewWidth = window.innerWidth;
-        const viewHeight = window.innerHeight;
+  async function addAngelToWorld(src, eraId, meta, shouldSave = true) {
+    const orbit = document.querySelector(`#${eraId} .orbit-content`);
+    if (!orbit) return;
 
-        // ---------------------------------------------------------
-        // 📌 [핵심 로직] 경계 감지 및 위치 계산
-        // ---------------------------------------------------------
+    let finalSrc = src;
+    const angle = meta.angle !== undefined ? meta.angle : Math.random() * Math.PI * 2;
+    const radius = meta.radius !== undefined ? meta.radius : 42 + Math.random() * 8;
 
-        // 기본 위치: 이미지의 우측 상단 코너
-        let modalX = angelRect.right + 20; // 우측으로 20px 띄움
-        let modalY = angelRect.top; // 이미지의 탑 라인과 맞춤
+    if (shouldSave) {
+      const storageRef = storage.ref(`angels/${Date.now()}.jpg`);
+      const uploadTask = await storageRef.putString(src, 'data_url');
+      finalSrc = await uploadTask.ref.getDownloadURL();
 
-        // ✅ [위쪽 경계 감지] 모달이 화면 위를 벗어나는가?
-        const safeMargin = 20; // 화면 끝과의 최소 여백
-
-        // 만약 이미지 탑 위치에서 모달 높이의 절반을 뺀 값이 safeMargin보다 작다면 (위로 잘림)
-        if (angelRect.top - (modalHeight / 2) < safeMargin) {
-          // 💡 [해결] 모달을 화면 상단 safeMargin 위치에 고정시킵니다.
-          modalY = safeMargin;
-          // 기존 중앙 정렬 보정(translateY(-50%))을 CSS에서 제거해야 합니다. (밑에서 처리)
-        } 
-        // ✅ [아래쪽 경계 감지] (이미지가 아주 아래에 있을 때)
-        else if (angelRect.bottom + (modalHeight / 2) > viewHeight - safeMargin) {
-          // 💡 [해결] 모달을 화면 하단 safeMargin 위치에 고정시키고 위로 뻗게 함
-          modalY = viewHeight - modalHeight - safeMargin;
-        }
-        // [그 외 정상적인 경우] 중앙 정렬 보정 (이미지 세로 중앙과 모달 세로 중앙을 맞춤)
-        else {
-          modalY = angelRect.top + (angelRect.height / 2) - (modalHeight / 2);
-        }
-
-        // ✅ [오른쪽 경계 감지] 모달이 화면 오른쪽을 벗어나는가?
-        if (modalX + modalWidth > viewWidth - safeMargin) {
-          // 💡 [해결] 모달을 이미지의 좌측으로 이동시킵니다.
-          modalX = angelRect.left - modalWidth - 20;
-        }
-
-        // 4. 📌 [최종 위치 적용] fixed 좌표 사용
-        modalContainer.style.position = 'fixed';
-        modalContainer.style.left = `${modalX}px`;
-        modalContainer.style.top = `${modalY}px`;
-        
-        // 💡 [중요] CSS에서 설정한 translate(-50%)이나 margin을 여기서 초기화하여
-        // 계산된 modalY 값이 정확히 적용되도록 합니다.
-        modalContainer.style.transform = 'none'; // 자바스크립트가 계산한 Y값이 캔버스의 탑
-        modalContainer.style.margin = '0'; 
-      }
-
-      // 📌 [핵심 수정] bindEvents 함수: hover 시 3초 추적 모달 실행
-      function bindEvents(item) {
-        // [削除] 기존 onclick 로직 삭제 (hover 로직과 통합)
-
-        // 📌 [mouseenter] 마우스를 이미지에 갖다 대면
-        item.onmouseenter = () => {
-          // 1. 기존 타이머나 추적 대상이 있다면 즉시 초기화 (중복 방지)
-          hideDetailModal();
-
-          // 2. 이미지에 저장된 데이터를 싹 긁어옵니다. (동일)
-          const imgEl = item.querySelector('img');
-          const d = {
-            title: item.getAttribute('data-title') || "UNTITLED",
-            artist: item.getAttribute('data-artist') || "UNKNOWN",
-            year: item.getAttribute('data-year') || "UNKNOWN",
-            place: item.getAttribute('data-place') || "UNKNOWN",
-            type: item.getAttribute('data-type') || "데이터가 없습니다.",
-            background: item.getAttribute('data-background') || "데이터가 없습니다.",
-            wing: item.getAttribute('data-wing') || "",
-            src: imgEl ? imgEl.src : ""
-          };
-
-          // 3. 상세 모달(detailOverlay)의 각 요소에 데이터를 넣어줍니다. (동일)
-          document.getElementById('detailImg').src = d.src;
-          document.getElementById('detailTitle').innerText = d.title.toUpperCase();
-          document.getElementById('detailArtist').innerText = d.artist;
-          document.getElementById('detailYear').innerText = d.year;
-          document.getElementById('detailPlace').innerText = d.place;
-          document.getElementById('detailType').innerText = d.type;
-          document.getElementById('detailContext').innerText = d.background;
-          if (document.getElementById('detailWing')) document.getElementById('detailWing').innerText = d.wing;
-
-          // 4. 모달을 화면에 띄웁니다 (flex).
-          detailOverlay.style.display = 'flex';
-          detailOverlay.classList.add('tracking-mode'); // CSS 등장 애니메이션용 클래스 추가
-          
-          // 5. [보안] 기존 정보 패널(infoPanel)은 아예 안 뜨게! (유지)
-          if (infoPanel) infoPanel.classList.remove('active');
-
-          // 6. 📌 [추적 시작] 현재 hover된 이미지를 activeAngel로 설정
-          activeAngel = item;
-          // 모달 위치를 이미지 옆으로 즉시 이동 (여기서 경계 감지 로직 실행)
-          updateModalPosition();
-
-          // 7. 📌 [3초 타이머 시작]
-          hoverTimer = setTimeout(() => {
-            // 3초가 지나면 모달을 숨기고 추적을 멈춥니다.
-            hideDetailModal();
-          }, 3000); 
-        };
-
-        // 📌 [mousemove] 이미지 위에서 마우스가 움직일 때 (궤도 운동 추적)
-        // 궤도 이미지가 계속 움직이므로 mousemove 이벤트가 계속 발생하며 위치를 업데이트합니다.
-        item.onmousemove = () => {
-          if (activeAngel) {
-            updateModalPosition(); // 움직일 때마다 경계 감지 로직 실행
-          }
-        };
-
-        // 📌 [mouseleave] 마우스가 이미지에서 벗어났을 때 (선택사항)
-        item.onmouseleave = () => {
-          // 선아 님 요청은 "3초 창이 뜰 수 있게" 이므로, mouseleave 시에는 닫지 않습니다.
-          // 대신 3초 타이머가 알아서 닫습니다. (마우스를 떼도 3초 동안 계속 뜸)
-          
-          // 만약 "마우스를 떼는 순간 닫고 싶다면" hideDetailModal(); 주석을 해제하세요.
-          // hideDetailModal();
-        };
-      }
-      // ---------------------------------------------------------
-
-      document.querySelectorAll('.orbit-item').forEach(bindEvents);
-
-      let pendingScanResult = null;
-      if (uploadBtn) { uploadBtn.onclick = () => { uploadModal.style.display = "block"; }; }
-      if (dropArea) { dropArea.onclick = () => fileInput.click(); }
-
-      if (fileInput) {
-        fileInput.onchange = (e) => {
-          const reader = new FileReader();
-          reader.onload = (ev) => {
-            previewImg.src = ev.target.result;
-            previewImg.style.display = "block";
-            document.getElementById('drop-text').style.display = "none";
-            startScan();
-          };
-          reader.readAsDataURL(e.target.files[0]);
-        };
-      }
-
-      async function startScan() {
-        dropArea.classList.add('is-scanning');
-        previewImg.classList.add('x-ray-active');
-        statusText.innerText = "X-RAY CAPTURING...";
-        await new Promise(r => setTimeout(r, 3000));
-
-        const eraKeys = Object.keys(eraData);
-        const randomEra = eraKeys[Math.floor(Math.random() * eraKeys.length)];
-        const meta = { ...eraData[randomEra] };
-
-        previewImg.classList.remove('x-ray-active');
-        statusText.innerHTML = `
-          <div class="scan-result-title">${meta.name.toUpperCase()}</div>
-          <div class="scan-result-reason">${meta.reason}</div>
-        `;
-        document.getElementById('upload-inputs').style.display = "block";
-        pendingScanResult = { src: previewImg.src, eraId: randomEra, meta: meta };
-        dropArea.classList.remove('is-scanning');
-      }
-
-      if (closeModal) {
-        closeModal.onclick = async () => {
-          if (pendingScanResult) {
-            document.querySelectorAll('.scan-input').forEach(el => el.style.display = 'none');
-            const guideEl = document.querySelector('.scan-close-guide');
-            if (guideEl) guideEl.style.display = 'none';
-
-            const loadingContainer = document.getElementById('loading-container');
-            if (loadingContainer) {
-              loadingContainer.style.display = 'flex';
-            }
-
-            pendingScanResult.meta.title = document.getElementById('input-title').value || "UNTITLED";
-            pendingScanResult.meta.type = document.getElementById('input-type').value || "UNKNOWN TYPE";
-            pendingScanResult.meta.artist = document.getElementById('input-artist').value || "UNKNOWN ARTIST";
-            pendingScanResult.meta.year = document.getElementById('input-year').value || "UNKNOWN YEAR";
-            pendingScanResult.meta.place = document.getElementById('input-place').value || "UNKNOWN LOCATION";
-            pendingScanResult.meta.background = document.getElementById('input-context').value || "No additional context provided.";
-            pendingScanResult.meta.wing = "SCANNED DATA";
-
-            await addAngelToWorld(
-              pendingScanResult.src,
-              pendingScanResult.eraId,
-              pendingScanResult.meta,
-              true
-            );
-
-            await new Promise(r => setTimeout(r, 3000));
-            pendingScanResult = null;
-          }
-
-          uploadModal.style.display = "none";
-          resetModal();
-        };
-      }
-
-      async function addAngelToWorld(src, eraId, meta, shouldSave = true) {
-        const orbit = document.querySelector(`#${eraId} .orbit-content`);
-        let finalSrc = src;
-        
-        let angle = meta.angle !== undefined ? meta.angle : Math.random() * Math.PI * 2;
-        let radius = meta.radius !== undefined ? meta.radius : (42 + Math.random() * 8);
-
-        if (orbit && shouldSave) {
-          const storageRef = storage.ref(`angels/${Date.now()}.jpg`);
-          const uploadTask = await storageRef.putString(src, 'data_url');
-          finalSrc = await uploadTask.ref.getDownloadURL();
-
-          await db.collection("angels").add({
-            src: finalSrc, 
-            eraId, 
-            meta: { ...meta, angle, radius },
-            createdAt: firebase.firestore.FieldValue.serverTimestamp()
-          });
-        }
-
-        if (orbit) {
-          const newItem = document.createElement('div');
-          newItem.className = 'orbit-item' + (shouldSave ? ' new-angel-focus' : '');
-          newItem.style.setProperty('--x', `${50 + radius * Math.cos(angle)}%`);
-          newItem.style.setProperty('--y', `${50 + radius * Math.sin(angle)}%`);
-          newItem.style.zIndex = document.querySelectorAll('.orbit-item').length + 1;
-          
-          const attrs = ['title', 'type', 'wing', 'artist', 'year', 'place', 'background', 'concept'];
-          attrs.forEach(a => { newItem.setAttribute(`data-${a}`, meta[a] || ""); });
-
-          const img = document.createElement('img');
-          img.src = finalSrc;
-          newItem.appendChild(img);
-          bindEvents(newItem);
-          orbit.appendChild(newItem);
-
-          if (shouldSave) {
-            setTimeout(() => {
-              newItem.classList.remove('new-angel-focus');
-            }, 10000); 
-          }
-        }
-      }
-
-      async function loadSavedAngels() {
-        const snap = await db.collection("angels").orderBy("createdAt", "asc").get();
-        snap.forEach(doc => { addAngelToWorld(doc.data().src, doc.data().eraId, doc.data().meta, false); });
-      }
-
-      function resetModal() {
-        previewImg.style.display = "none";
-        document.getElementById('drop-text').style.display = "block";
-        document.getElementById('upload-inputs').style.display = "none";
-        document.querySelectorAll('.scan-input').forEach(el => {
-          el.style.display = 'block';
-          el.value = "";
-        });
-        const guideEl = document.querySelector('.scan-close-guide');
-        if (guideEl) guideEl.style.display = 'block';
-        const loadingContainer = document.getElementById('loading-container');
-        if (loadingContainer) loadingContainer.style.display = 'none';
-        statusText.innerText = "Ready to scan...";
-      }
-
-      if (aboutBtn) { aboutBtn.onclick = () => { aboutOverlay.style.display = aboutOverlay.style.display === 'block' ? 'none' : 'block'; }; }
-
-      document.querySelectorAll('.era-list li').forEach(li => {
-        li.onclick = () => {
-          const target = li.getAttribute('data-target');
-          document.querySelectorAll('.era-list li').forEach(i => { i.classList.remove('active'); });
-          li.classList.add('active');
-          if (target === 'all') {
-            world.classList.remove('focus-mode');
-            layers.forEach(l => { l.classList.remove('highlight', 'paused'); });
-          } else {
-            world.classList.add('focus-mode');
-            layers.forEach(l => { const isT = l.id === target; l.classList.toggle('highlight', isT); l.classList.toggle('paused', isT); });
-          }
-        };
+      await db.collection('angels').add({
+        src: finalSrc,
+        eraId,
+        meta: { ...meta, angle, radius },
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
       });
+    }
 
-      if (indexOpenBtn) {
-        indexOpenBtn.onclick = () => {
-          renderIndex();
-          indexOverlay.style.display = 'block';
+    const newItem = document.createElement('div');
+    newItem.className = `orbit-item${shouldSave ? ' new-angel-focus' : ''}`;
+    newItem.style.setProperty('--x', `${50 + radius * Math.cos(angle)}%`);
+    newItem.style.setProperty('--y', `${50 + radius * Math.sin(angle)}%`);
+    newItem.style.zIndex = document.querySelectorAll('.orbit-item').length + 1;
+
+    const attrs = ['title', 'type', 'wing', 'artist', 'year', 'place', 'background', 'concept'];
+    attrs.forEach((attr) => {
+      newItem.setAttribute(`data-${attr}`, meta[attr] || '');
+    });
+
+    const img = document.createElement('img');
+    img.src = finalSrc;
+    img.alt = meta.title || 'Uploaded angel';
+    newItem.appendChild(img);
+
+    bindEvents(newItem);
+    orbit.appendChild(newItem);
+
+    if (shouldSave) {
+      setTimeout(() => {
+        newItem.classList.remove('new-angel-focus');
+      }, 10000);
+    }
+  }
+
+  async function loadSavedAngels() {
+    try {
+      const snapshot = await db.collection('angels').orderBy('createdAt', 'asc').get();
+      snapshot.forEach((doc) => {
+        const data = doc.data();
+        addAngelToWorld(data.src, data.eraId, data.meta || {}, false);
+      });
+    } catch (error) {
+      console.error('Saved angels load error:', error);
+    }
+  }
+
+  async function renderIndex() {
+    if (!indexGrid) return;
+
+    indexGrid.innerHTML = '<div style="color:#000; padding:20px; grid-column:1/-1; text-align:center;">LOADING ARCHIVE...</div>';
+
+    try {
+      const snapshot = await db.collection('angels').orderBy('createdAt', 'desc').get();
+      indexGrid.innerHTML = '';
+
+      snapshot.forEach((doc) => {
+        const data = doc.data();
+        const meta = data.meta || {};
+        const date = data.createdAt ? new Date(data.createdAt.seconds * 1000) : new Date();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        const hours = String(date.getHours()).padStart(2, '0');
+        const minutes = String(date.getMinutes()).padStart(2, '0');
+        const seconds = String(date.getSeconds()).padStart(2, '0');
+        const timeLabel = `#${month}${day} ${hours}:${minutes}:${seconds}`;
+
+        const item = document.createElement('div');
+        item.className = 'index-item';
+        item.innerHTML = `
+          <div class="index-number">${timeLabel}</div>
+          <div class="index-img-box">
+            <img src="${data.src}" alt="${meta.title || 'Untitled'}">
+          </div>
+          <div class="index-item-footer">
+            <span class="footer-title">${(meta.title || 'UNTITLED').toUpperCase()}</span>
+            <span class="footer-artist">${(meta.artist || 'ANONYMOUS').toUpperCase()}</span>
+          </div>
+        `;
+
+        item.onclick = () => {
+          openDetailFromData({
+            src: data.src,
+            title: meta.title || 'UNTITLED',
+            artist: meta.artist || 'UNKNOWN',
+            year: meta.year || 'UNKNOWN',
+            place: meta.place || 'UNKNOWN',
+            type: meta.type || '데이터가 없습니다.',
+            wing: meta.wing || ''
+          });
         };
-      }
 
-      if (indexCloseBtn) {
-        indexCloseBtn.onclick = () => {
-          indexOverlay.style.display = 'none';
-        };
-      }
+        indexGrid.appendChild(item);
+      });
+    } catch (error) {
+      console.error('Index load error:', error);
+      indexGrid.innerHTML = '<div style="grid-column:1/-1; text-align:center;">FAILED TO LOAD DATA.</div>';
+    }
+  }
 
-      async function renderIndex() {
-        indexGrid.innerHTML = '<div style="color:#000; padding:20px; grid-column: 1/-1; text-align:center;">LOADING ARCHIVE...</div>';
+  if (zoomInBtn) {
+    zoomInBtn.onclick = () => {
+      zoom += 0.2;
+      update3D();
+    };
+  }
+
+  if (zoomOutBtn) {
+    zoomOutBtn.onclick = () => {
+      zoom -= 0.2;
+      update3D();
+    };
+  }
+
+  if (scene) {
+    scene.onpointerdown = (event) => {
+      if (event.target.closest('.controls, .top-nav, .side-panel, .modal, .about-overlay, #detailOverlay')) return;
+      isDragging = true;
+      prevX = event.clientX;
+      prevY = event.clientY;
+    };
+  }
+
+  window.onpointermove = (event) => {
+    if (!isDragging) return;
+    rotateY += (event.clientX - prevX) * 0.25;
+    rotateX -= (event.clientY - prevY) * 0.25;
+    update3D();
+    prevX = event.clientX;
+    prevY = event.clientY;
+  };
+
+  window.onpointerup = () => {
+    isDragging = false;
+  };
+
+  if (detailClose) {
+    detailClose.onclick = (event) => {
+      event.stopPropagation();
+      hideDetailModal();
+    };
+  }
+
+  if (detailOverlay) {
+    detailOverlay.onclick = (event) => {
+      if (event.target === detailOverlay) hideDetailModal();
+    };
+  }
+
+  document.querySelectorAll('.orbit-item').forEach(bindEvents);
+
+  if (uploadBtn && uploadModal) {
+    uploadBtn.onclick = () => {
+      uploadModal.style.display = 'block';
+    };
+  }
+
+  if (dropArea && fileInput) {
+    dropArea.onclick = () => fileInput.click();
+  }
+
+  if (fileInput) {
+    fileInput.onchange = (event) => {
+      const file = event.target.files && event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = (loadEvent) => {
+        if (!previewImg) return;
+        previewImg.src = loadEvent.target.result;
+        previewImg.style.display = 'block';
+
+        const dropText = document.getElementById('drop-text');
+        if (dropText) dropText.style.display = 'none';
+
+        startScan();
+      };
+      reader.readAsDataURL(file);
+    };
+  }
+
+  if (closeModal) {
+    closeModal.onclick = async () => {
+      if (pendingScanResult) {
+        document.querySelectorAll('.scan-input').forEach((element) => {
+          element.style.display = 'none';
+        });
+
+        const guideEl = document.querySelector('.scan-close-guide');
+        if (guideEl) guideEl.style.display = 'none';
+
+        const loadingContainer = document.getElementById('loading-container');
+        if (loadingContainer) loadingContainer.style.display = 'flex';
+
+        const inputTitle = document.getElementById('input-title');
+        const inputType = document.getElementById('input-type');
+        const inputArtist = document.getElementById('input-artist');
+        const inputYear = document.getElementById('input-year');
+        const inputPlace = document.getElementById('input-place');
+
+        pendingScanResult.meta.title = inputTitle?.value || 'UNTITLED';
+        // TYPE 입력값은 그대로 저장합니다.
+        pendingScanResult.meta.type = inputType?.value || 'UNKNOWN TYPE';
+        pendingScanResult.meta.artist = inputArtist?.value || 'UNKNOWN ARTIST';
+        pendingScanResult.meta.year = inputYear?.value || 'UNKNOWN YEAR';
+        pendingScanResult.meta.place = inputPlace?.value || 'UNKNOWN LOCATION';
+        pendingScanResult.meta.wing = 'SCANNED DATA';
 
         try {
-          const snapshot = await db.collection("angels").orderBy("createdAt", "desc").get();
-          indexGrid.innerHTML = ''; 
+          await addAngelToWorld(
+            pendingScanResult.src,
+            pendingScanResult.eraId,
+            pendingScanResult.meta,
+            true
+          );
 
-          snapshot.forEach((doc) => {
-            const data = doc.data();
-            const meta = data.meta || {};
-            
-            const date = data.createdAt ? new Date(data.createdAt.seconds * 1000) : new Date();
-            const month = (date.getMonth() + 1).toString().padStart(2, '0');
-            const day = date.getDate().toString().padStart(2, '0');
-            const hours = date.getHours().toString().padStart(2, '0');
-            const minutes = date.getMinutes().toString().padStart(2, '0');
-            const seconds = date.getSeconds().toString().padStart(2, '0');
-
-            const timeLabel = `#${month}${day} ${hours}:${minutes}:${seconds}`;
-            
-            const item = document.createElement('div');
-            item.className = 'index-item';
-            
-            item.innerHTML = `
-              <div class="index-number">${timeLabel}</div>
-              <div class="index-img-box">
-                <img src="${data.src}" alt="${meta.title}">
-              </div>
-              <div class="index-item-footer">
-                <span class="footer-title">${(meta.title || "UNTITLED").toUpperCase()}</span>
-                <span class="footer-artist">${(meta.artist || "ANONYMOUS").toUpperCase()}</span>
-              </div>
-              `;
-            
-            item.onclick = () => {
-              // 인덱스에서 클릭 시엔 추적 모드가 아니므로 일반 중앙 배치가 필요합니다.
-              // 만약 인덱스 클릭 시에도 이 모달을 쓴다면, CSS에서 중앙 배치 스타일을 active 클래스 등으로 분리해야 합니다.
-              document.getElementById('detailImg').src = data.src;
-              document.getElementById('detailTitle').innerText = (meta.title || "UNTITLED").toUpperCase();
-              document.getElementById('detailArtist').innerText = meta.artist || "UNKNOWN";
-              document.getElementById('detailYear').innerText = meta.year || "UNKNOWN";
-              document.getElementById('detailPlace').innerText = meta.place || "UNKNOWN";
-              document.getElementById('detailType').innerText = meta.type || "데이터가 없습니다.";
-              document.getElementById('detailContext').innerText = meta.background || "데이터가 없습니다.";
-              if (document.getElementById('detailWing')) document.getElementById('detailWing').innerText = meta.wing || "";
-              
-              detailOverlay.style.display = 'flex';
-              // 인덱스 클릭 시엔 위치 업데이트 함수를 호출하지 않거나, 중앙 배치용 좌표를 줍니다.
-              // 일단 자바스크립트로 직접 위치를 주지 않도록 초기화 (CSS가 중앙 배치를 담당한다고 가정)
-              const modalContainer = detailOverlay.querySelector('.detail-container');
-              if (modalContainer) {
-                modalContainer.style.position = ''; 
-                modalContainer.style.left = '';
-                modalContainer.style.top = '';
-                modalContainer.style.transform = '';
-                modalContainer.style.margin = '0 auto';
-              }
-            };
-
-            indexGrid.appendChild(item);
-          });
+          await new Promise((resolve) => setTimeout(resolve, 3000));
+          pendingScanResult = null;
         } catch (error) {
-          console.error("Index load error:", error);
-          indexGrid.innerHTML = '<div style="grid-column: 1/-1; text-align:center;">FAILED TO LOAD DATA.</div>';
+          console.error('Upload error:', error);
         }
       }
 
-      update3D();
-      loadSavedAngels();
-    });
+      if (uploadModal) uploadModal.style.display = 'none';
+      resetModal();
+    };
+  }
+
+  if (aboutBtn && aboutOverlay) {
+    aboutBtn.onclick = () => {
+      aboutOverlay.style.display = aboutOverlay.style.display === 'block' ? 'none' : 'block';
+    };
+  }
+
+  document.querySelectorAll('.era-list li').forEach((item) => {
+    item.onclick = () => {
+      const target = item.getAttribute('data-target');
+
+      document.querySelectorAll('.era-list li').forEach((eraItem) => {
+        eraItem.classList.remove('active');
+      });
+      item.classList.add('active');
+
+      if (!world) return;
+
+      if (target === 'all') {
+        world.classList.remove('focus-mode');
+        layers.forEach((layer) => {
+          layer.classList.remove('highlight', 'paused');
+        });
+      } else {
+        world.classList.add('focus-mode');
+        layers.forEach((layer) => {
+          const isTarget = layer.id === target;
+          layer.classList.toggle('highlight', isTarget);
+          layer.classList.toggle('paused', isTarget);
+        });
+      }
+    };
+  });
+
+  if (indexOpenBtn && indexOverlay) {
+    indexOpenBtn.onclick = () => {
+      renderIndex();
+      indexOverlay.style.display = 'block';
+    };
+  }
+
+  if (indexCloseBtn && indexOverlay) {
+    indexCloseBtn.onclick = () => {
+      indexOverlay.style.display = 'none';
+    };
+  }
+
+  update3D();
+  loadSavedAngels();
+});
+
 </script>
 
 </body>
