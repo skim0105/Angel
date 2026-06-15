@@ -956,179 +956,259 @@
 
 
   <script>
-    /* =============================
-       TYPING INTRO
-    ============================== */
+  /* =============================
+     TYPING INTRO
+  ============================== */
 
-    const angelpediaLoader =
-      document.getElementById("angelpediaLoader");
+  const angelpediaLoader =
+    document.getElementById("angelpediaLoader");
 
-    const angelpediaLoaderKorean =
-      document.getElementById("angelpediaLoaderKorean");
+  const angelpediaLoaderKorean =
+    document.getElementById("angelpediaLoaderKorean");
 
-    const angelpediaLoaderEnglish =
-      document.getElementById("angelpediaLoaderEnglish");
+  const angelpediaLoaderEnglish =
+    document.getElementById("angelpediaLoaderEnglish");
 
-    const angelpediaLoaderCommand =
-      document.getElementById("angelpediaLoaderCommand");
-
-    const loaderKoreanText =
-      "ANGELPEDIA에 기록된 시대별 날개 도상들의 상세 정보를 프린트하여 확인해보세요";
-
-    const loaderEnglishText =
-      "Print and review detailed information on the wing iconography of each era archived in ANGELPEDIA.";
-
-    const loaderCommandText =
-      "COMMAND + P";
+  const angelpediaLoaderCommand =
+    document.getElementById("angelpediaLoaderCommand");
 
 
-    function wait(milliseconds) {
-      return new Promise((resolve) => {
-        window.setTimeout(resolve, milliseconds);
-      });
+  const loaderKoreanText =
+    "ANGELPEDIA에 기록된 시대별 날개 도상들의 상세 정보를 프린트하여 확인해보세요";
+
+  const loaderEnglishText =
+    "Print and review detailed information on the wing iconography of each era archived in ANGELPEDIA";
+
+  const loaderCommandText =
+    "COMMAND + P";
+
+
+  function wait(milliseconds) {
+    return new Promise((resolve) => {
+      window.setTimeout(resolve, milliseconds);
+    });
+  }
+
+
+  /* 문장을 화면 가로폭에 맞게 자동으로 확대 */
+
+  function fitSingleLineText(
+    element,
+    text,
+    minimumSize,
+    maximumSize
+  ) {
+    element.textContent = text;
+
+    let minimum = minimumSize;
+    let maximum = maximumSize;
+
+    for (let i = 0; i < 20; i += 1) {
+      const middle = (minimum + maximum) / 2;
+
+      element.style.fontSize = `${middle}px`;
+
+      if (element.scrollWidth <= element.clientWidth) {
+        minimum = middle;
+      } else {
+        maximum = middle;
+      }
     }
 
+    element.style.fontSize = `${minimum}px`;
+    element.textContent = "";
+  }
 
-    function typeLoaderText(element, text, speed) {
-      return new Promise((resolve) => {
-        let index = 0;
 
-        element.textContent = "";
-        element.classList.add("is-typing");
+  /* 타이핑 애니메이션 */
 
-        function typeNextCharacter() {
-          if (index < text.length) {
-            element.textContent += text[index];
-            index += 1;
+  function typeLoaderText(element, text, speed) {
+    return new Promise((resolve) => {
+      let index = 0;
 
-            window.setTimeout(
-              typeNextCharacter,
-              speed
-            );
+      element.textContent = "";
+      element.classList.add("is-typing");
 
-            return;
-          }
+      function typeNextCharacter() {
+        if (index < text.length) {
+          element.textContent += text[index];
+          index += 1;
 
-          element.classList.remove("is-typing");
-          resolve();
+          window.setTimeout(
+            typeNextCharacter,
+            speed
+          );
+
+          return;
         }
 
-        typeNextCharacter();
-      });
-    }
+        element.classList.remove("is-typing");
+        resolve();
+      }
 
-
-    async function playAngelPediaIntro() {
-      await wait(300);
-
-      await typeLoaderText(
-        angelpediaLoaderKorean,
-        loaderKoreanText,
-        28
-      );
-
-      await wait(180);
-
-      await typeLoaderText(
-        angelpediaLoaderEnglish,
-        loaderEnglishText,
-        16
-      );
-
-      await wait(250);
-
-      await typeLoaderText(
-        angelpediaLoaderCommand,
-        loaderCommandText,
-        75
-      );
-
-      await wait(1300);
-
-      angelpediaLoader.classList.add("is-hidden");
-      document.body.classList.remove("is-loading");
-
-      window.setTimeout(() => {
-        angelpediaLoader.remove();
-      }, 850);
-    }
-
-
-    playAngelPediaIntro();
-
-
-    /* =============================
-       ERA FILTER
-    ============================== */
-
-    const eraButtons =
-      document.querySelectorAll(".era-list li");
-
-    const pediaSets =
-      document.querySelectorAll(".pedia-set");
-
-    const printPages =
-      document.querySelectorAll(".print-page");
-
-
-    eraButtons.forEach((button) => {
-      button.addEventListener("click", () => {
-        const selectedEra = button.dataset.era;
-
-        document.body.setAttribute(
-          "data-era",
-          selectedEra
-        );
-
-        eraButtons.forEach((item) => {
-          item.classList.remove("active");
-        });
-
-        button.classList.add("active");
-
-        pediaSets.forEach((set) => {
-          const isSelected =
-            selectedEra === "all" ||
-            set.dataset.eraSet === selectedEra;
-
-          if (isSelected) {
-            set.classList.remove("hidden");
-          } else {
-            set.classList.add("hidden");
-          }
-        });
-      });
+      typeNextCharacter();
     });
+  }
 
 
-    /* =============================
-       PRINT FILTER
-    ============================== */
+  async function playAngelPediaIntro() {
+    /* 웹폰트가 로드된 후 글자 크기 계산 */
 
-    window.addEventListener("beforeprint", () => {
-      const selectedEra =
-        document.body.getAttribute("data-era") || "all";
+    if (document.fonts && document.fonts.ready) {
+      await document.fonts.ready;
+    }
 
-      printPages.forEach((page) => {
-        const shouldPrint =
+    fitSingleLineText(
+      angelpediaLoaderKorean,
+      loaderKoreanText,
+      20,
+      90
+    );
+
+    fitSingleLineText(
+      angelpediaLoaderEnglish,
+      loaderEnglishText,
+      18,
+      80
+    );
+
+
+    /* 로딩 화면이 열린 뒤 잠시 대기 */
+
+    await wait(600);
+
+
+    /* 한국어 타이핑: 숫자가 클수록 느림 */
+
+    await typeLoaderText(
+      angelpediaLoaderKorean,
+      loaderKoreanText,
+      55
+    );
+
+
+    /* 한국어와 영어 사이 대기 */
+
+    await wait(500);
+
+
+    /* 영어 타이핑 */
+
+    await typeLoaderText(
+      angelpediaLoaderEnglish,
+      loaderEnglishText,
+      40
+    );
+
+
+    /* 영어와 COMMAND + P 사이 대기 */
+
+    await wait(700);
+
+
+    /* COMMAND + P 타이핑 */
+
+    await typeLoaderText(
+      angelpediaLoaderCommand,
+      loaderCommandText,
+      130
+    );
+
+
+    /* 모든 문장이 나온 상태로 유지 */
+
+    await wait(2000);
+
+
+    /* 로딩 화면 페이드아웃 */
+
+    angelpediaLoader.classList.add("is-hidden");
+    document.body.classList.remove("is-loading");
+
+
+    /* 페이드아웃 완료 후 로딩 요소 삭제 */
+
+    window.setTimeout(() => {
+      angelpediaLoader.remove();
+    }, 850);
+  }
+
+
+  playAngelPediaIntro();
+
+
+  /* =============================
+     ERA FILTER
+  ============================== */
+
+  const eraButtons =
+    document.querySelectorAll(".era-list li");
+
+  const pediaSets =
+    document.querySelectorAll(".pedia-set");
+
+  const printPages =
+    document.querySelectorAll(".print-page");
+
+
+  eraButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+      const selectedEra = button.dataset.era;
+
+      document.body.setAttribute(
+        "data-era",
+        selectedEra
+      );
+
+      eraButtons.forEach((item) => {
+        item.classList.remove("active");
+      });
+
+      button.classList.add("active");
+
+      pediaSets.forEach((set) => {
+        const isSelected =
           selectedEra === "all" ||
-          page.dataset.era === selectedEra;
+          set.dataset.eraSet === selectedEra;
 
-        if (shouldPrint) {
-          page.classList.remove("print-hidden");
+        if (isSelected) {
+          set.classList.remove("hidden");
         } else {
-          page.classList.add("print-hidden");
+          set.classList.add("hidden");
         }
       });
     });
+  });
 
 
-    window.addEventListener("afterprint", () => {
-      printPages.forEach((page) => {
+  /* =============================
+     PRINT FILTER
+  ============================== */
+
+  window.addEventListener("beforeprint", () => {
+    const selectedEra =
+      document.body.getAttribute("data-era") || "all";
+
+    printPages.forEach((page) => {
+      const shouldPrint =
+        selectedEra === "all" ||
+        page.dataset.era === selectedEra;
+
+      if (shouldPrint) {
         page.classList.remove("print-hidden");
-      });
+      } else {
+        page.classList.add("print-hidden");
+      }
     });
-  </script>
+  });
+
+
+  window.addEventListener("afterprint", () => {
+    printPages.forEach((page) => {
+      page.classList.remove("print-hidden");
+    });
+  });
+</script>
 
 </body>
 </html>
