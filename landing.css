@@ -161,8 +161,8 @@
   top: 50%;
   left: 50%;
 
-  width: 1450px;
-  height: 1450px; /* width와 동일하게 */
+  width: 1390px;
+  height: 1390px; /* width와 동일하게 */
 
   /* 기존 1400 × 1200의 납작함과 비슷하게 약간 더 눕힘 */
   transform: translate(-50%, -50%) rotateX(75deg);
@@ -230,3 +230,44 @@
   }
 }
 
+/* 궤도 내부에서 날개가 움직이는 영역 */
+
+.angel-orbit {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+  transform: none !important;
+  animation: none !important;
+}
+
+.orbit-wing {
+  position: absolute;
+
+  top: 0;
+  left: 0;
+
+  display: block;
+
+  width: 120px;
+  height: auto;
+
+  object-fit: contain;
+
+  background-color: #ffffff;
+  padding: 3px;
+  box-sizing: content-box;
+
+  transform: translate(-50%, -50%);
+  transform-origin: center;
+
+  rotate: none !important;
+  animation: none !important;
+
+  pointer-events: none;
+
+  z-index: 10;
+  will-change: left, top;
+}

@@ -871,3 +871,43 @@ break-after: auto;
 page-break-after: auto;
 }
 }
+
+
+/* 로딩 화면 바깥으로 이미지가 넘어가지 않게 */
+
+.angelpedia-loader {
+  overflow: hidden;
+}
+
+
+/* 로딩 화면 배경 날개 */
+
+.angelpedia-loader-background {
+  position: absolute;
+
+  top: 50%;
+  left: 50%;
+
+  width: min(98vw, 1800px);
+  height: auto;
+
+  transform: translate(-50%, -49.5%);
+
+  opacity: 0.1;
+
+  pointer-events: none;
+  user-select: none;
+
+  z-index: 0;
+}
+
+/* 문구는 날개보다 앞에 표시 */
+
+.angelpedia-loader-inner {
+  position: relative;
+
+  width: 100%;
+  height: 100%;
+
+  z-index: 1;
+}

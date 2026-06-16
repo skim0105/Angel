@@ -52,7 +52,12 @@
       <div class="dashed-ellipse"></div>
 
       <div class="angel-orbit">
-        <!-- 추후 천사 이미지가 들어가는 영역 -->
+        <img 
+          class="orbit-wing"
+          id="orbitWing"
+          src="wing.png"
+          alt="Orbiting wing"
+          >
       </div>
     </div>
 
@@ -74,47 +79,60 @@
 
   </main>
 
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      const orbitContainer =
-        document.querySelector('.orbit-container');
 
-      if (!orbitContainer) return;
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const orbitArea = document.querySelector(".angel-orbit");
+    const orbitWing = document.getElementById("orbitWing");
 
-      let orbitAngle = 0;
-      let previousTime = performance.now();
+    if (!orbitArea || !orbitWing) return;
 
-      /*
-        타원 전체가 한 바퀴 도는 시간입니다.
-        숫자가 클수록 천천히 회전합니다.
-      */
-      const orbitRotationDuration = 90;
+    /* 한 바퀴 도는 시간 (숫자가 클수록 느려짐) */
+    const orbitDuration = 30;
 
-      function rotateWholeOrbit(currentTime) {
-        const elapsedSeconds =
-          (currentTime - previousTime) / 1000;
+    /* 시작 위치 (-Math.PI / 2 = 타원 맨 위) */
+    const startAngle = -Math.PI / 2;
 
-        previousTime = currentTime;
+    let animationStartTime = null;
 
-        const degreesPerSecond =
-          360 / orbitRotationDuration;
-
-        orbitAngle +=
-          degreesPerSecond * elapsedSeconds;
-
-        orbitAngle %= 360;
-
-        orbitContainer.style.setProperty(
-          '--orbit-angle',
-          `${orbitAngle}deg`
-        );
-
-        requestAnimationFrame(rotateWholeOrbit);
+    function moveWingAlongOrbit(currentTime) {
+      if (animationStartTime === null) {
+        animationStartTime = currentTime;
       }
 
-      requestAnimationFrame(rotateWholeOrbit);
-    });
-  </script>
+      const elapsedSeconds = (currentTime - animationStartTime) / 1000;
+      const progress = (elapsedSeconds % orbitDuration) / orbitDuration;
+      const angle = startAngle + progress * Math.PI * 2;
+
+      const orbitWidth = orbitArea.clientWidth;
+      const orbitHeight = orbitArea.clientHeight;
+
+      const centerX = orbitWidth / 2;
+      const centerY = orbitHeight / 2;
+
+      const radiusX = orbitWidth / 2;
+      const radiusY = orbitHeight / 2;
+
+      const wingX = centerX + radiusX * Math.cos(angle);
+      const wingY = centerY + radiusY * Math.sin(angle);
+
+      /* 위치를 이동시킵니다 */
+      orbitWing.style.left = `${wingX}px`;
+      orbitWing.style.top = `${wingY}px`;
+
+      /* 💡 [수정] translate(-50%, -50%)로 중심을 잡은 뒤, 
+         부모의 rotateX(75deg)에 의해 찌그러진 각도를 rotateX(-75deg)로 역계산하여 
+         관객을 향해 똑바로 세워줍니다. 이로 인해 찌그러짐이 완벽히 해결됩니다. */
+      orbitWing.style.transform = "translate(-50%, -50%) rotateX(-75deg)";
+
+      window.requestAnimationFrame(moveWingAlongOrbit);
+    }
+
+    window.requestAnimationFrame(moveWingAlongOrbit);
+  });
+</script>
+
+
 
 </body>
 </html>
